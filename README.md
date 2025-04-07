@@ -34,6 +34,7 @@
 🖼️ **Transparent Background** - Seamlessly blend with any desktop
 
 ## Installation
+Currently we only support MacOS, Windows will come soon.
 
 ### macOS
 
