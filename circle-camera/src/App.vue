@@ -18,8 +18,6 @@ const availableCameras = ref<MediaDeviceInfo[]>([]);
 const selectedCameraId = ref<string>('');
 const errorMessage = ref("");
 const cameraSize = ref(300);
-const isDragging = ref(false);
-const dragOffset = ref({ x: 0, y: 0 });
 
 // Workaround for Tauri v2 camera access
 // Based on https://github.com/tauri-apps/tauri/issues/5370#issuecomment-2493318187
@@ -153,25 +151,24 @@ async function closeApp() {
     // First stop the camera to release resources
     stopCamera();
 
-    // Use the Tauri window API to close the window
-    const { Window } = await import('@tauri-apps/api/window');
-    const appWindow = Window.getCurrent();
-
-    // Try to destroy the window (more forceful than close)
+    // Use the Rust command to close the app
     try {
-      await appWindow.destroy();
-    } catch (error1) {
-      console.error('Error with window.destroy:', error1);
+      const { invoke } = await import('@tauri-apps/api/core');
+      await invoke('close_app');
+    } catch (error) {
+      console.error('Error closing app with Rust command:', error);
 
-      // Fall back to regular close
+      // Fallback to JS API
       try {
+        const { Window } = await import('@tauri-apps/api/window');
+        const appWindow = Window.getCurrent();
         await appWindow.close();
-      } catch (error2) {
-        console.error('Error with window.close:', error2);
+      } catch (fallbackError) {
+        console.error('Error with fallback close method:', fallbackError);
       }
     }
   } catch (error) {
-    console.error('Error closing app:', error);
+    console.error('Error in closeApp:', error);
   }
 }
 
@@ -180,67 +177,26 @@ function resizeCamera(newSize: number) {
   cameraSize.value = newSize;
 }
 
-// Drag functionality
-function startDrag(event: MouseEvent) {
-  isDragging.value = true;
-  const appElement = document.getElementById('app');
-  if (appElement) {
-    const rect = appElement.getBoundingClientRect();
-    dragOffset.value = {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top
-    };
-  }
-}
-
-async function onDrag(event: MouseEvent) {
-  if (!isDragging.value) return;
-
-  try {
-    const { Window } = await import('@tauri-apps/api/window');
-    const { LogicalPosition } = await import('@tauri-apps/api/dpi');
-    const appWindow = Window.getCurrent();
-    const position = await appWindow.innerPosition();
-
-    const x = position.x + (event.clientX - dragOffset.value.x);
-    const y = position.y + (event.clientY - dragOffset.value.y);
-
-    console.log('Moving window to:', x, y);
-    await appWindow.setPosition(new LogicalPosition(x, y));
-  } catch (error) {
-    console.error('Error moving window:', error);
-  }
-}
-
-function stopDrag() {
-  isDragging.value = false;
-}
+// Note: We're using the data-tauri-drag-region attribute for dragging instead of JavaScript
 
 // Lifecycle hooks
 onMounted(async () => {
   await getAvailableCameras();
-
-  // Add global mouse event listeners for dragging
-  window.addEventListener('mousemove', onDrag);
-  window.addEventListener('mouseup', stopDrag);
 });
 
 onUnmounted(() => {
   stopCamera();
-
-  // Remove global event listeners
-  window.removeEventListener('mousemove', onDrag);
-  window.removeEventListener('mouseup', stopDrag);
 });
 </script>
 
 <template>
   <main class="container">
     <div class="webcam-container" :style="{ width: `${cameraSize}px`, height: `${cameraSize}px` }">
-      <div class="webcam-circle" @mousedown="startDrag">
+      <div class="webcam-circle" data-tauri-drag-region>
         <video ref="videoRef" autoplay playsinline muted></video>
       </div>
 
+      <!-- Camera selection dropdown - visible on hover -->
       <div class="controls-dropdown">
         <select v-model="selectedCameraId" @change="handleCameraChange" class="camera-select">
           <option v-for="camera in availableCameras" :key="camera.deviceId" :value="camera.deviceId">
@@ -248,22 +204,23 @@ onUnmounted(() => {
           </option>
         </select>
       </div>
+
+      <!-- Window controls - visible on hover -->
+      <div class="window-controls">
+        <button class="control-button close" @click="closeApp" title="Close">
+          ✕
+        </button>
+        <button class="control-button resize" @click="resizeCamera(cameraSize - 20)" title="Decrease size">
+          -
+        </button>
+        <button class="control-button resize" @click="resizeCamera(cameraSize + 20)" title="Increase size">
+          +
+        </button>
+      </div>
     </div>
 
     <div class="error-message" v-if="errorMessage">
       {{ errorMessage }}
-    </div>
-
-    <div class="window-controls">
-      <button class="control-button close" @click="closeApp" title="Close">
-        ✕
-      </button>
-      <button class="control-button resize" @click="resizeCamera(cameraSize - 20)" title="Decrease size">
-        -
-      </button>
-      <button class="control-button resize" @click="resizeCamera(cameraSize + 20)" title="Increase size">
-        +
-      </button>
     </div>
   </main>
 </template>
