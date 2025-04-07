@@ -18,7 +18,9 @@
         "decorations": false,
         "transparent": true,
         "alwaysOnTop": true,
-        "resizable": true
+        "resizable": true,
+        "userAgent": "Circle Camera App",
+        "center": true
       }
     ],
     "security": {

@@ -19,6 +19,8 @@ const selectedCameraId = ref<string>('');
 const errorMessage = ref("");
 const cameraSize = ref(300);
 
+// No drag state needed when using Tauri's built-in startDragging method
+
 // Workaround for Tauri v2 camera access
 // Based on https://github.com/tauri-apps/tauri/issues/5370#issuecomment-2493318187
 const getMediaDevices = async () => {
@@ -177,7 +179,29 @@ function resizeCamera(newSize: number) {
   cameraSize.value = newSize;
 }
 
-// Note: We're using the data-tauri-drag-region attribute for dragging instead of JavaScript
+// Drag functionality using Tauri's built-in startDragging method
+async function startDrag(event: MouseEvent) {
+  try {
+    // Prevent default to avoid text selection during drag
+    event.preventDefault();
+
+    // Don't drag if clicking on a control element
+    if (
+      (event.target as HTMLElement).closest('.controls-dropdown') ||
+      (event.target as HTMLElement).closest('.window-controls')
+    ) {
+      return;
+    }
+
+    console.log('Starting window drag...');
+    const { Window } = await import('@tauri-apps/api/window');
+    const appWindow = Window.getCurrent();
+    await appWindow.startDragging();
+    console.log('Window drag started successfully');
+  } catch (error) {
+    console.error('Error starting window drag:', error);
+  }
+}
 
 // Lifecycle hooks
 onMounted(async () => {
@@ -191,8 +215,8 @@ onUnmounted(() => {
 
 <template>
   <main class="container">
-    <div class="webcam-container" :style="{ width: `${cameraSize}px`, height: `${cameraSize}px` }">
-      <div class="webcam-circle" data-tauri-drag-region>
+    <div class="webcam-container" :style="{ width: `${cameraSize}px`, height: `${cameraSize}px` }" @mousedown="startDrag">
+      <div class="webcam-circle">
         <video ref="videoRef" autoplay playsinline muted></video>
       </div>
 
@@ -243,6 +267,7 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  -webkit-app-region: drag; /* For compatibility */
 }
 
 .webcam-circle {
@@ -270,6 +295,7 @@ video {
   z-index: 10;
   transition: opacity 0.3s;
   opacity: 0; /* Hidden by default */
+  -webkit-app-region: no-drag; /* Make controls not draggable */
 }
 
 .webcam-container:hover .controls-dropdown {
@@ -284,6 +310,7 @@ video {
   padding: 5px 10px;
   font-size: 12px;
   cursor: pointer;
+  -webkit-app-region: no-drag; /* Make select not draggable */
 }
 
 .camera-select:focus {
@@ -309,6 +336,7 @@ video {
   gap: 5px;
   opacity: 0; /* Hidden by default */
   transition: opacity 0.3s;
+  -webkit-app-region: no-drag; /* Make controls not draggable */
 }
 
 .webcam-container:hover .window-controls {
@@ -328,6 +356,7 @@ video {
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
   transition: background-color 0.2s;
+  -webkit-app-region: no-drag; /* Make buttons not draggable */
 }
 
 .control-button:hover {
