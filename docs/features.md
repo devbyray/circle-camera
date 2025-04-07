@@ -6,7 +6,7 @@ Circle Camera is packed with features designed to enhance your screen recording 
 
 Show your webcam feed in a perfect circle, ideal for screen recordings and presentations. The circular design takes up less space and looks more professional than traditional rectangular webcam displays.
 
-![Circle Camera Screenshot](./images/screenshot-app.png)
+![Circle Camera Screenshot](/images/screenshot-app.png)
 
 ## Resizable
 
