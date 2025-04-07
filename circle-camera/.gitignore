@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Keep installers directory but ignore other build artifacts
+/src-tauri/target
+!/installers
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
