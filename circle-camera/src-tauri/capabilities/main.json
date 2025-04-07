@@ -1,9 +1,0 @@
-{
-  "identifier": "main",
-  "description": "Main capability for the Circle Camera app",
-  "permissions": [
-    "core:default",
-    "core:window:default",
-    "opener:default"
-  ]
-}
