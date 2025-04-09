@@ -66,6 +66,12 @@ Currently we only support MacOS, Windows will come soon.
 - pnpm
 - Rust and Cargo
 
+#### MacOS
+- brew install llvm
+
+#### Windows
+- choco install llvm
+
 ### Setup
 
 1. Clone the repository

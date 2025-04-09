@@ -14,6 +14,9 @@ hero:
     - theme: alt
       text: Learn More
       link: /features
+    - theme: sponsor
+      text: Check on Product Hunt
+      link: https://www.producthunt.com/posts/circle-camera
 
 features:
   - icon: 🔍
@@ -41,6 +44,19 @@ features:
 Circle Camera is designed for content creators, presenters, and professionals who want to include their webcam feed in screen recordings or presentations without taking up too much space.
 
 With its circular design and transparent background, Circle Camera provides a clean, professional look that doesn't distract from your content.
+
+## Recommendations:
+
+<a href="https://www.producthunt.com/posts/circle-camera?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-circle&#0045;camera" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=951220&theme=light&t=1744185745115" alt="Circle&#0032;Camera - Minimalist&#0032;webcam&#0032;app&#0032;that&#0032;displays&#0032;your&#0032;camera&#0032;in&#0032;a&#0032;circle&#0046; | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
+
+<div class="recomendations">
+
+<iframe style="border: none;" src="https://cards.producthunt.com/cards/comments/4525025?v=1" width="500" height="405" frameborder="0" scrolling="no" allowfullscreen></iframe>
+
+<iframe style="border: none;" src="https://cards.producthunt.com/cards/reviews/1254272?v=1" width="500" height="405" frameborder="0" scrolling="no" allowfullscreen></iframe>
+
+</div>
 
 <!-- <div class="vp-doc" style="text-align: center; margin-top: 2rem;">
   <a href="https://apps-by-rayray.lemonsqueezy.com/buy/8398f6ca-7229-4db3-85c9-42336db18bd5?embed=1" class="lemonsqueezy-button">Buy Circle Camera</a><script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>

@@ -62,3 +62,9 @@
     max-width: 100%;
   }
 }
+
+.recomendations {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}

@@ -14,7 +14,8 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Features', link: '/features' },
       { text: 'Download', link: '/download' },
-      { text: 'Documentation', link: '/documentation' }
+      { text: 'Documentation', link: '/documentation' },
+      { text: 'Product Hunt', link: 'https://www.producthunt.com/posts/circle-camera' },
     ],
 
     sidebar: [
