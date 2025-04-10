@@ -57,26 +57,7 @@ function setThickBorder() {
   emit('update:borderWidth', 10);
 }
 
-// Border color options
-function setWhiteBorder() {
-  emit('update:borderColor', '#ffffff');
-}
-
-function setBlackBorder() {
-  emit('update:borderColor', '#000000');
-}
-
-function setRedBorder() {
-  emit('update:borderColor', '#ff0000');
-}
-
-function setBlueBorder() {
-  emit('update:borderColor', '#0000ff');
-}
-
-function setGreenBorder() {
-  emit('update:borderColor', '#00ff00');
-}
+// Color picker is now in a separate component
 </script>
 
 <template>
@@ -119,21 +100,7 @@ function setGreenBorder() {
       <button @click="setThickBorder" :class="{ active: borderWidth === 10 }">Thick</button>
     </div>
 
-    <div class="menu-section">
-      <h3>Border Color</h3>
-      <div class="color-buttons">
-        <button @click="setWhiteBorder" class="color-button white-button"
-          :class="{ active: borderColor === '#ffffff' }"></button>
-        <button @click="setBlackBorder" class="color-button black-button"
-          :class="{ active: borderColor === '#000000' }"></button>
-        <button @click="setRedBorder" class="color-button red-button"
-          :class="{ active: borderColor === '#ff0000' }"></button>
-        <button @click="setBlueBorder" class="color-button blue-button"
-          :class="{ active: borderColor === '#0000ff' }"></button>
-        <button @click="setGreenBorder" class="color-button green-button"
-          :class="{ active: borderColor === '#00ff00' }"></button>
-      </div>
-    </div>
+    <!-- Border color is now in a separate overlay -->
   </div>
 </template>
 
@@ -245,37 +212,7 @@ button.active {
   gap: 8px;
 }
 
-.color-button {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  padding: 0;
-  border: 2px solid transparent;
-}
-
-.color-button.active {
-  border-color: rgba(255, 255, 255, 0.8);
-}
-
-.white-button {
-  background-color: #ffffff;
-}
-
-.black-button {
-  background-color: #000000;
-}
-
-.red-button {
-  background-color: #ff0000;
-}
-
-.blue-button {
-  background-color: #0000ff;
-}
-
-.green-button {
-  background-color: #00ff00;
-}
+/* Color picker is now in a separate component */
 
 .camera-buttons {
   display: flex;

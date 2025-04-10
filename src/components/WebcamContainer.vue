@@ -6,6 +6,7 @@ import WebcamCircle from './WebcamCircle.vue';
 import WindowControls from './WindowControls.vue';
 import MenuBar from './MenuBar.vue';
 import BrandingBar from './BrandingBar.vue';
+import ColorPickerOverlay from './ColorPickerOverlay.vue';
 
 // State
 const availableCameras = ref<MediaDeviceInfo[]>([]);
@@ -19,6 +20,7 @@ const borderRadius = ref(50); // 50% = circle, 0% = square
 const borderWidth = ref(0);
 const borderColor = ref('#ffffff');
 const showSettings = ref(false);
+const showColorPicker = ref(false);
 
 // Initialize cameras
 async function initializeCameras() {
@@ -52,6 +54,12 @@ function handleResize(change: number) {
 function toggleSettings() {
   showSettings.value = !showSettings.value;
   console.log('Settings toggled:', showSettings.value);
+}
+
+// Toggle color picker
+function toggleColorPicker() {
+  showColorPicker.value = !showColorPicker.value;
+  console.log('Color picker toggled:', showColorPicker.value);
 }
 
 
@@ -121,6 +129,7 @@ onUnmounted(() => {
         :cameraSize="cameraSize"
         @resize="handleResize"
         @toggleSettings="toggleSettings"
+        @toggleColorPicker="toggleColorPicker"
       />
 
       <!-- Menu Bar for settings -->
@@ -136,6 +145,14 @@ onUnmounted(() => {
         @update:borderColor="(val: string) => { borderColor = val; console.log('Border color updated:', val); }"
         @update:selectedCameraId="(val: string) => { selectedCameraId = val; console.log('Camera updated:', val); }"
         @close="showSettings = false"
+      />
+
+      <!-- Color Picker Overlay -->
+      <ColorPickerOverlay
+        :borderColor="borderColor"
+        :isVisible="showColorPicker"
+        @update:borderColor="(val: string) => { borderColor = val; console.log('Border color updated:', val); }"
+        @close="showColorPicker = false"
       />
     </div>
 

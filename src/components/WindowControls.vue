@@ -6,7 +6,7 @@ defineProps<{
   cameraSize: number;
 }>();
 
-const emit = defineEmits(['resize', 'toggleSettings']);
+const emit = defineEmits(['resize', 'toggleSettings', 'toggleColorPicker']);
 
 function resizeCamera(change: number) {
   emit('resize', change);
@@ -14,6 +14,10 @@ function resizeCamera(change: number) {
 
 function toggleSettings() {
   emit('toggleSettings');
+}
+
+function toggleColorPicker() {
+  emit('toggleColorPicker');
 }
 
 function handleCloseApp() {
@@ -27,7 +31,10 @@ function handleCloseApp() {
   <div class="window-controls">
     <div class="left-controls">
       <button class="control-button settings" @click="toggleSettings" title="Settings">
-        <IconLibrary name="settings" size="24" />
+        <IconLibrary name="settings" size="16" color="#fff" />
+      </button>
+      <button class="control-button color-picker" @click="toggleColorPicker" title="Color Picker">
+        <IconLibrary name="color-palette" size="16" color="#fff" />
       </button>
     </div>
 
