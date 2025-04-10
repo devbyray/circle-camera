@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@iconify-icons/icomoon-free':
+        specifier: ^1.2.3
+        version: 1.2.3
+      '@iconify/vue':
+        specifier: ^4.3.0
+        version: 4.3.0(vue@3.5.13(typescript@5.6.3))
       '@tauri-apps/api':
         specifier: ^2.4.1
         version: 2.4.1
@@ -20,6 +26,9 @@ importers:
       '@vercel/analytics':
         specifier: ^1.5.0
         version: 1.5.0(vue@3.5.13(typescript@5.6.3))
+      '@vicons/ionicons5':
+        specifier: ^0.13.0
+        version: 0.13.0
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.6.3)
@@ -445,11 +454,19 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@iconify-icons/icomoon-free@1.2.3':
+    resolution: {integrity: sha512-GIYUhkoYz5dDuZRzRyD96NCT/g6fVVxJGryK5rODlxUpQEPUr4UQRihqwpPtOObeXkzihwiX7V1ldyeZjpJiRg==}
+
   '@iconify-json/simple-icons@1.2.31':
     resolution: {integrity: sha512-xBUPtvkcSAiXs9DfVtudhLddQtQYin3I3Ph/W5FNYA0oE6r2hmLB8TgOog9OjOt1Sxn3IB5+4n5+64DMf2xNmQ==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
+
+  '@iconify/vue@4.3.0':
+    resolution: {integrity: sha512-Xq0h6zMrHBbrW8jXJ9fISi+x8oDQllg5hTDkDuxnWiskJ63rpJu9CvJshj8VniHVTbsxCg9fVoPAaNp3RQI5OQ==}
+    peerDependencies:
+      vue: '>=3'
 
   '@jridgewell/sourcemap-codec@1.5.0':
     resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
@@ -710,6 +727,9 @@ packages:
         optional: true
       vue-router:
         optional: true
+
+  '@vicons/ionicons5@0.13.0':
+    resolution: {integrity: sha512-zvZKBPjEXKN7AXNo2Na2uy+nvuv6SP4KAMQxpKL2vfHMj0fSvuw7JZcOPCjQC3e7ayssKnaoFVAhbYcW6v41qQ==}
 
   '@vitejs/plugin-vue@5.2.3':
     resolution: {integrity: sha512-IYSLEQj4LgZZuoVpdSUCw3dIynTWQgPlaRP6iAvMle4My0HdYwr5g5wQAfwOeHQBmYwEkqF70nRpSilr6PoUDg==}
@@ -1447,11 +1467,20 @@ snapshots:
   '@esbuild/win32-x64@0.25.2':
     optional: true
 
+  '@iconify-icons/icomoon-free@1.2.3':
+    dependencies:
+      '@iconify/types': 2.0.0
+
   '@iconify-json/simple-icons@1.2.31':
     dependencies:
       '@iconify/types': 2.0.0
 
   '@iconify/types@2.0.0': {}
+
+  '@iconify/vue@4.3.0(vue@3.5.13(typescript@5.6.3))':
+    dependencies:
+      '@iconify/types': 2.0.0
+      vue: 3.5.13(typescript@5.6.3)
 
   '@jridgewell/sourcemap-codec@1.5.0': {}
 
@@ -1640,6 +1669,8 @@ snapshots:
   '@vercel/analytics@1.5.0(vue@3.5.13(typescript@5.6.3))':
     optionalDependencies:
       vue: 3.5.13(typescript@5.6.3)
+
+  '@vicons/ionicons5@0.13.0': {}
 
   '@vitejs/plugin-vue@5.2.3(vite@5.4.17)(vue@3.5.13(typescript@5.6.3))':
     dependencies:

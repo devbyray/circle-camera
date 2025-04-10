@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { closeApp } from '../utils/windowUtils';
+import IconLibrary from './icons/IconLibrary.vue';
 
 defineProps<{
   cameraSize: number;
@@ -26,20 +27,20 @@ function handleCloseApp() {
   <div class="window-controls">
     <div class="left-controls">
       <button class="control-button settings" @click="toggleSettings" title="Settings">
-        ⚙️
+        <IconLibrary name="settings" size="24" />
       </button>
     </div>
 
     <div class="right-controls">
       <button class="control-button resize" @click="resizeCamera(-20)" title="Decrease size">
-        -
+        <IconLibrary name="remove" size="24" />
       </button>
       <button class="control-button resize" @click="resizeCamera(20)" title="Increase size">
-        +
+        <IconLibrary name="add" size="24" />
       </button>
 
       <button class="control-button close" @click="handleCloseApp" title="Close">
-        ✕
+        <IconLibrary name="close" size="24" />
       </button>
     </div>
   </div>
@@ -63,6 +64,7 @@ function handleCloseApp() {
   pointer-events: auto;
   /* Ensure buttons are clickable */
 }
+
 .left-controls,
 .right-controls {
   display: flex;
@@ -71,8 +73,8 @@ function handleCloseApp() {
 }
 
 .control-button {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: none;
   display: flex;
@@ -80,16 +82,19 @@ function handleCloseApp() {
   justify-content: center;
   cursor: pointer;
   font-size: 1rem;
-  background-color: var(--brand-color);
-  color: black;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
   transition: background-color 0.2s;
   -webkit-app-region: no-drag;
-  /* Make buttons not draggable */
+}
+
+.control-button svg {
+  transition: color 0.2s;
 }
 
 .control-button:hover {
   background-color: var(--brand-color-darker);
-  color: white;
+  color: black;
 }
 
 .control-button.close:hover {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import IconLibrary from './icons/IconLibrary.vue';
 defineProps<{
   borderRadius: number;
   borderWidth: number;
@@ -83,26 +84,31 @@ function setGreenBorder() {
     <div class="menu-header">
       <h2>Circle Camera Settings</h2>
       <button class="close-button" @click="emit('close')" title="Close settings">
-        ✕
+        <IconLibrary name="close" />
       </button>
     </div>
     <div class="menu-section">
       <h3>Camera</h3>
       <div class="camera-buttons">
-        <button
-          v-for="camera in availableCameras"
-          :key="camera.deviceId"
+        <button v-for="camera in availableCameras" :key="camera.deviceId"
           :class="{ active: selectedCameraId === camera.deviceId }"
-          @click="emit('update:selectedCameraId', camera.deviceId)"
-        >
+          @click="emit('update:selectedCameraId', camera.deviceId)">
           {{ getShortCameraName(camera) }}
         </button>
       </div>
     </div>
     <div class="menu-section">
       <h3>Shape</h3>
-      <button @click="setSquareShape" :class="{ active: borderRadius === 0 }">Square</button>
-      <button @click="setCircleShape" :class="{ active: borderRadius === 50 }">Circle</button>
+      <div class="shape-buttons">
+        <button @click="setSquareShape" :class="{ active: borderRadius === 0 }" class="icon-button">
+          <IconLibrary name="square" size="16" color="#fff" />
+          <span>Square</span>
+        </button>
+        <button @click="setCircleShape" :class="{ active: borderRadius === 50 }" class="icon-button">
+          <IconLibrary name="circle" size="16" color="#fff" />
+          <span>Circle</span>
+        </button>
+      </div>
     </div>
 
     <div class="menu-section">
@@ -116,31 +122,16 @@ function setGreenBorder() {
     <div class="menu-section">
       <h3>Border Color</h3>
       <div class="color-buttons">
-        <button
-          @click="setWhiteBorder"
-          class="color-button white-button"
-          :class="{ active: borderColor === '#ffffff' }"
-        ></button>
-        <button
-          @click="setBlackBorder"
-          class="color-button black-button"
-          :class="{ active: borderColor === '#000000' }"
-        ></button>
-        <button
-          @click="setRedBorder"
-          class="color-button red-button"
-          :class="{ active: borderColor === '#ff0000' }"
-        ></button>
-        <button
-          @click="setBlueBorder"
-          class="color-button blue-button"
-          :class="{ active: borderColor === '#0000ff' }"
-        ></button>
-        <button
-          @click="setGreenBorder"
-          class="color-button green-button"
-          :class="{ active: borderColor === '#00ff00' }"
-        ></button>
+        <button @click="setWhiteBorder" class="color-button white-button"
+          :class="{ active: borderColor === '#ffffff' }"></button>
+        <button @click="setBlackBorder" class="color-button black-button"
+          :class="{ active: borderColor === '#000000' }"></button>
+        <button @click="setRedBorder" class="color-button red-button"
+          :class="{ active: borderColor === '#ff0000' }"></button>
+        <button @click="setBlueBorder" class="color-button blue-button"
+          :class="{ active: borderColor === '#0000ff' }"></button>
+        <button @click="setGreenBorder" class="color-button green-button"
+          :class="{ active: borderColor === '#00ff00' }"></button>
       </div>
     </div>
   </div>
@@ -187,18 +178,22 @@ function setGreenBorder() {
   font-weight: 500;
 }
 
+.shape-buttons {
+  display: flex;
+  gap: 10px;
+}
+
 .close-button {
   background-color: rgba(255, 0, 0, 0.7);
   border: none;
   color: white;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 12px;
   transition: background-color 0.2s;
 }
 
@@ -237,6 +232,12 @@ button:hover {
 button.active {
   background-color: rgba(255, 255, 255, 0.3);
   font-weight: bold;
+}
+
+.icon-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .color-buttons {
