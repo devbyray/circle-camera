@@ -35,9 +35,6 @@ importers:
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.6.3)
-      vue-color-kit:
-        specifier: ^1.0.6
-        version: 1.0.6(vue@3.5.13(typescript@5.6.3))
       vue-colorful:
         specifier: ^0.0.0
         version: 0.0.0
@@ -1174,11 +1171,6 @@ packages:
   vscode-uri@3.1.0:
     resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
 
-  vue-color-kit@1.0.6:
-    resolution: {integrity: sha512-56oSUp8hGIZ3E4ayZLqTDAb2C7VzaWAC1EVUsZEvPCD2wiiiFd2L2BiEGN1ingfz538sYWKNXxMZQGslqbMiBg==}
-    peerDependencies:
-      vue: ^3.0.5
-
   vue-colorful@0.0.0:
     resolution: {integrity: sha512-KA6sg9LMtxeYDjRzWabhskCvjX+ifhEjTFM47ZX45frmtQJI+v1uYS46KJo0kzlge2+/HMci0GCjwWtFa872WA==}
 
@@ -2214,10 +2206,6 @@ snapshots:
       - universal-cookie
 
   vscode-uri@3.1.0: {}
-
-  vue-color-kit@1.0.6(vue@3.5.13(typescript@5.6.3)):
-    dependencies:
-      vue: 3.5.13(typescript@5.6.3)
 
   vue-colorful@0.0.0: {}
 
