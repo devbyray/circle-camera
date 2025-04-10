@@ -33,6 +33,7 @@ function handleCameraChange(event: Event) {
   transition: opacity 0.3s;
   opacity: 0; /* Hidden by default */
   -webkit-app-region: no-drag; /* Make controls not draggable */
+  pointer-events: auto; /* Ensure dropdown is clickable */
 }
 
 .camera-select {

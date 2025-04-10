@@ -5,7 +5,7 @@ defineProps<{
   cameraSize: number;
 }>();
 
-const emit = defineEmits(['resize', 'toggleSettings']);
+const emit = defineEmits(['resize']);
 
 function resizeCamera(change: number) {
   emit('resize', change);
@@ -15,16 +15,12 @@ function handleCloseApp() {
   closeApp();
 }
 
-function handleToggleSettings() {
-  emit('toggleSettings');
-}
+
 </script>
 
 <template>
   <div class="window-controls">
-    <button class="control-button settings" @click="handleToggleSettings" title="Settings">
-      ⚙️
-    </button>
+
     <button class="control-button resize" @click="resizeCamera(-20)" title="Decrease size">
       -
     </button>
@@ -47,6 +43,7 @@ function handleToggleSettings() {
   opacity: 0; /* Hidden by default */
   transition: opacity 0.3s;
   -webkit-app-region: no-drag; /* Make controls not draggable */
+  pointer-events: auto; /* Ensure buttons are clickable */
 }
 
 .control-button {
@@ -73,7 +70,5 @@ function handleToggleSettings() {
   background-color: #ff3e00;
 }
 
-.control-button.settings {
-  font-size: 10px;
-}
+
 </style>

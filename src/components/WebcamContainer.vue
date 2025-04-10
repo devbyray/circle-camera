@@ -5,14 +5,14 @@ import { startDrag } from '../utils/windowUtils';
 import WebcamCircle from './WebcamCircle.vue';
 import ControlsDropdown from './ControlsDropdown.vue';
 import WindowControls from './WindowControls.vue';
-import SettingsOverlay from './SettingsOverlay.vue';
+import MenuBar from './MenuBar.vue';
 
 // State
 const availableCameras = ref<MediaDeviceInfo[]>([]);
 const selectedCameraId = ref<string>('');
 const errorMessage = ref("");
 const cameraSize = ref(300);
-const showSettings = ref(false);
+
 
 // Camera appearance settings
 const borderRadius = ref(50); // 50% = circle, 0% = square
@@ -47,14 +47,39 @@ function handleResize(change: number) {
   }
 }
 
-// Toggle settings overlay
-function toggleSettings() {
-  showSettings.value = !showSettings.value;
+
+
+// Listen for events from Rust
+async function setupEventListeners() {
+  try {
+    const { listen } = await import('@tauri-apps/api/event');
+
+    // Listen for border radius changes
+    listen('set-border-radius', (event) => {
+      console.log('Received border radius event:', event);
+      borderRadius.value = event.payload as number;
+    });
+
+    // Listen for border width changes
+    listen('set-border-width', (event) => {
+      console.log('Received border width event:', event);
+      borderWidth.value = event.payload as number;
+    });
+
+    // Listen for border color changes
+    listen('set-border-color', (event) => {
+      console.log('Received border color event:', event);
+      borderColor.value = event.payload as string;
+    });
+  } catch (error) {
+    console.error('Error setting up event listeners:', error);
+  }
 }
 
 // Lifecycle hooks
 onMounted(async () => {
   await initializeCameras();
+  await setupEventListeners();
 });
 
 // No need to call stopCamera here as it's handled in the WebcamCircle component
@@ -64,7 +89,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <main class="container">
+  <main class="container" id="container">
     <div
       class="webcam-container"
       :style="{ width: `${cameraSize}px`, height: `${cameraSize}px` }"
@@ -90,22 +115,19 @@ onUnmounted(() => {
       <WindowControls
         :cameraSize="cameraSize"
         @resize="handleResize"
-        @toggleSettings="toggleSettings"
       />
 
-      <!-- Settings overlay - visible when settings button is clicked -->
-      <SettingsOverlay
-        :availableCameras="availableCameras"
-        :selectedCameraId="selectedCameraId"
+      <!-- Menu Bar for settings -->
+      <MenuBar
         :borderRadius="borderRadius"
         :borderWidth="borderWidth"
         :borderColor="borderColor"
-        :isVisible="showSettings"
-        @update:selectedCameraId="selectedCameraId = $event"
-        @update:borderRadius="borderRadius = $event"
-        @update:borderWidth="borderWidth = $event"
-        @update:borderColor="borderColor = $event"
-        @close="showSettings = false"
+        :availableCameras="availableCameras"
+        :selectedCameraId="selectedCameraId"
+        @update:borderRadius="(val: number) => { borderRadius = val; console.log('Border radius updated:', val); }"
+        @update:borderWidth="(val: number) => { borderWidth = val; console.log('Border width updated:', val); }"
+        @update:borderColor="(val: string) => { borderColor = val; console.log('Border color updated:', val); }"
+        @update:selectedCameraId="(val: string) => { selectedCameraId = val; console.log('Camera updated:', val); }"
       />
     </div>
 
@@ -139,6 +161,7 @@ onUnmounted(() => {
 .webcam-container:hover :deep(.controls-dropdown),
 .webcam-container:hover :deep(.window-controls) {
   opacity: 1; /* Make controls visible on hover */
+  pointer-events: auto; /* Ensure controls are clickable */
 }
 
 .error-message {

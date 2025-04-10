@@ -23,12 +23,31 @@ function updateCamera(event: Event) {
 
 function updateBorderRadius(event: Event) {
   const input = event.target as HTMLInputElement;
-  emit('update:borderRadius', parseInt(input.value));
+  const value = parseInt(input.value);
+  console.log('Updating border radius to:', value);
+  emit('update:borderRadius', value);
 }
 
 function updateBorderWidth(event: Event) {
   const input = event.target as HTMLInputElement;
-  emit('update:borderWidth', parseInt(input.value));
+  const value = parseInt(input.value);
+  console.log('Updating border width to:', value);
+  emit('update:borderWidth', value);
+}
+
+// For real-time updates during slider movement
+function updateBorderRadiusLive(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const value = parseInt(input.value);
+  console.log('Live updating border radius to:', value);
+  emit('update:borderRadius', value);
+}
+
+function updateBorderWidthLive(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const value = parseInt(input.value);
+  console.log('Live updating border width to:', value);
+  emit('update:borderWidth', value);
 }
 
 function updateBorderColor(event: Event) {
@@ -47,13 +66,13 @@ function closeOverlay() {
       <h3>Camera Settings</h3>
       <button class="close-button" @click="closeOverlay">✕</button>
     </div>
-    
+
     <div class="settings-section">
       <label for="camera-select">Camera</label>
-      <select 
-        id="camera-select" 
-        :value="selectedCameraId" 
-        @change="updateCamera" 
+      <select
+        id="camera-select"
+        :value="selectedCameraId"
+        @change="updateCamera"
         class="settings-select"
       >
         <option v-for="camera in availableCameras" :key="camera.deviceId" :value="camera.deviceId">
@@ -61,46 +80,48 @@ function closeOverlay() {
         </option>
       </select>
     </div>
-    
+
     <div class="settings-section">
       <label for="border-radius">Shape (Square to Circle)</label>
       <div class="slider-container">
-        <input 
-          type="range" 
-          id="border-radius" 
-          min="0" 
-          max="50" 
-          :value="borderRadius" 
-          @input="updateBorderRadius"
+        <input
+          type="range"
+          id="border-radius"
+          min="0"
+          max="50"
+          :value="borderRadius"
+          @input="updateBorderRadiusLive"
+          @change="updateBorderRadius"
           class="slider"
         >
         <span class="slider-value">{{ borderRadius }}%</span>
       </div>
     </div>
-    
+
     <div class="settings-section">
       <label for="border-width">Border Width</label>
       <div class="slider-container">
-        <input 
-          type="range" 
-          id="border-width" 
-          min="0" 
-          max="10" 
-          :value="borderWidth" 
-          @input="updateBorderWidth"
+        <input
+          type="range"
+          id="border-width"
+          min="0"
+          max="10"
+          :value="borderWidth"
+          @input="updateBorderWidthLive"
+          @change="updateBorderWidth"
           class="slider"
         >
         <span class="slider-value">{{ borderWidth }}px</span>
       </div>
     </div>
-    
+
     <div class="settings-section">
       <label for="border-color">Border Color</label>
       <div class="color-picker-container">
-        <input 
-          type="color" 
-          id="border-color" 
-          :value="borderColor" 
+        <input
+          type="color"
+          id="border-color"
+          :value="borderColor"
           @input="updateBorderColor"
           class="color-picker"
         >
@@ -124,6 +145,7 @@ function closeOverlay() {
   z-index: 100;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   -webkit-app-region: no-drag;
+  pointer-events: auto; /* Ensure overlay is interactive */
 }
 
 .settings-header {
@@ -180,6 +202,7 @@ function closeOverlay() {
 .slider {
   flex: 1;
   -webkit-appearance: none;
+  appearance: none;
   height: 5px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 5px;
@@ -194,6 +217,15 @@ function closeOverlay() {
   border-radius: 50%;
   background: white;
   cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  border: none;
 }
 
 .slider-value {
@@ -211,6 +243,7 @@ function closeOverlay() {
 
 .color-picker {
   -webkit-appearance: none;
+  appearance: none;
   width: 30px;
   height: 30px;
   border: none;
