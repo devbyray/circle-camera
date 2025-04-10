@@ -59,11 +59,11 @@ With its circular design and transparent background, Circle Camera provides a cl
 
 ## Features
 
-![Circle Camera Screenshot](./images/screenshot-app.png)
+![Circle Camera Screenshot](/images/screenshot-app.png)
 
 <div style="display: flex; justify-content: center; margin-top: 2rem; gap: 1rem;">
-<img src="./images/screenshot-border-color.png" alt="Circle Camera Screenshot" width="400" height="400">
-<img src="./images/screenshot-camera-settings.png" alt="Circle Camera Screenshot" width="400" height="400">
+<img src="/images/screenshot-border-color.png" alt="Circle Camera Screenshot" width="400" height="400">
+<img src="/images/screenshot-camera-settings.png" alt="Circle Camera Screenshot" width="400" height="400">
 </div>
 
 
