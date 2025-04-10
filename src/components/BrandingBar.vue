@@ -76,6 +76,7 @@ async function openWebsite() {
   display: flex;
   flex-direction: column;
   gap: 0;
+  align-items: flex-start;
 }
 
 .app-info,
