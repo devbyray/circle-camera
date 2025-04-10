@@ -10,6 +10,7 @@
     "tauri": "tauri",
     "icons": "pnpm tauri icon public/icon.svg",
     "build:macos": "pnpm tauri build --target aarch64-apple-darwin",
+    "build:windows-on-macos": "pnpm tauri build --runner cargo-xwin --target x86_64-pc-windows-msvc",
     "build:windows": "pnpm tauri build --target x86_64-pc-windows-msvc",
     "build:installer": "pnpm tauri build && mkdir -p installers && cp src-tauri/target/release/bundle/dmg/circle-camera_*.dmg installers/",
     "docs:dev": "vitepress dev docs",

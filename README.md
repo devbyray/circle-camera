@@ -86,6 +86,9 @@ Currently we only support MacOS, Windows will come soon.
 #### MacOS
 - brew install llvm
 
+#### MacOs build Windows app
+Check the Tauri guide for creating the [Windows app on MacOS](https://v2.tauri.app/distribute/windows-installer/#experimental-build-windows-apps-on-linux-and-macos).
+
 #### Windows
 - choco install llvm
 
