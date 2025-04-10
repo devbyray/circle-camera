@@ -39,10 +39,10 @@ function handleCloseApp() {
     </div>
 
     <div class="right-controls">
-      <button class="control-button resize" @click="resizeCamera(-20)" title="Decrease size">
+      <button class="control-button resize" v-if="cameraSize > 200" @click="resizeCamera(-20)" title="Decrease size">
         <IconLibrary name="remove" size="24" />
       </button>
-      <button class="control-button resize" @click="resizeCamera(20)" title="Increase size">
+      <button class="control-button resize" v-if="cameraSize < 350" @click="resizeCamera(20)" title="Increase size">
         <IconLibrary name="add" size="24" />
       </button>
 

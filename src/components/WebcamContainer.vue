@@ -44,9 +44,11 @@ function handleCameraError(message: string) {
 // Handle resize
 function handleResize(change: number) {
   cameraSize.value += change;
-  // Ensure minimum size
+  // Ensure minimum and maximum size
   if (cameraSize.value < 100) {
     cameraSize.value = 100;
+  } else if (cameraSize.value > 350) {
+    cameraSize.value = 350;
   }
 }
 
