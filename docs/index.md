@@ -19,15 +19,21 @@ hero:
       link: https://www.producthunt.com/posts/circle-camera
 
 features:
+  - icon: ✨
+    title: Customizable Shape
+    details: Display your webcam feed as a circle or square based on your preference
   - icon: 🔍
     title: Resizable
-    details: Easily adjust the size to fit your needs
+    details: Easily adjust the size with buttons or keyboard shortcuts
   - icon: 🖱️
     title: Draggable
     details: Position the camera anywhere on your screen
   - icon: 🎥
     title: Camera Selection
-    details: Choose between multiple cameras if available
+    details: Switch between multiple cameras if available
+  - icon: 🎨
+    title: Border Customization
+    details: Adjust thickness and select any color for your camera border
   - icon: 🔄
     title: Always on Top
     details: Stay visible over other applications
@@ -37,7 +43,11 @@ features:
   - icon: 🖼️
     title: Transparent Background
     details: Seamlessly blend with any desktop
+  - icon: 🔢
+    title: Version Display
+    details: Always know which version you're using
 ---
+
 
 ## Why Circle Camera?
 
@@ -45,10 +55,21 @@ Circle Camera is designed for content creators, presenters, and professionals wh
 
 With its circular design and transparent background, Circle Camera provides a clean, professional look that doesn't distract from your content.
 
+
+
+## Features
+
+![Circle Camera Screenshot](./images/screenshot-app.png)
+
+<div style="display: flex; justify-content: center; margin-top: 2rem; gap: 1rem;">
+<img src="./images/screenshot-border-color.png" alt="Circle Camera Screenshot" width="400" height="400">
+<img src="./images/screenshot-camera-settings.png" alt="Circle Camera Screenshot" width="400" height="400">
+</div>
+
+
 ## Recommendations:
 
 <a href="https://www.producthunt.com/posts/circle-camera?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-circle&#0045;camera" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=951220&theme=light&t=1744185745115" alt="Circle&#0032;Camera - Minimalist&#0032;webcam&#0032;app&#0032;that&#0032;displays&#0032;your&#0032;camera&#0032;in&#0032;a&#0032;circle&#0046; | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
-
 
 <div class="recomendations">
 

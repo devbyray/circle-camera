@@ -1,8 +1,8 @@
 [package]
 name = "circle-camera"
-version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+version = "0.2.0"
+description = "A sleek, minimalist webcam app that displays your camera feed in a perfect circle."
+authors = ["devbyray"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
