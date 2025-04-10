@@ -42,23 +42,40 @@ watch(() => props.selectedCameraId, async (newCameraId) => {
 
 <template>
   <div
-    class="webcam-circle"
+    class="webcam-wrapper"
     :style="{
       borderRadius: `${borderRadius}%`,
       border: borderWidth > 0 ? `${borderWidth}px solid ${borderColor}` : 'none'
     }"
   >
-    <video ref="videoRef" autoplay playsinline muted></video>
+    <div
+      class="webcam-circle"
+      :style="{
+        borderRadius: `${borderRadius}%`
+      }"
+    >
+      <video ref="videoRef" autoplay playsinline muted></video>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.webcam-wrapper {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 .webcam-circle {
   width: 100%;
   height: 100%;
   overflow: hidden;
   cursor: move;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: relative;
 }
 

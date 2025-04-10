@@ -43,10 +43,12 @@ async function openWebsite() {
 
 <style scoped>
 .branding-bar {
+  width: calc(100% - 20px);
+  display: flex;
+  justify-content: center;
   position: absolute;
   bottom: 10px;
   left: 10px;
-  display: flex;
   opacity: 0;
   transition: opacity 0.3s;
   z-index: 100;

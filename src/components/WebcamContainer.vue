@@ -16,7 +16,7 @@ const cameraSize = ref(300);
 
 
 // Camera appearance settings
-const borderRadius = ref(50); // 50% = circle, 0% = square
+const borderRadius = ref(100); // 50% = circle, 0% = square
 const borderWidth = ref(0);
 const borderColor = ref('#ffffff');
 const showSettings = ref(false);
@@ -107,7 +107,10 @@ onUnmounted(() => {
   <main class="container" id="container">
     <div
       class="webcam-container"
-      :style="{ width: `${cameraSize}px`, height: `${cameraSize}px` }"
+      :style="{
+        width: `${cameraSize}px`,
+        height: `${cameraSize}px`
+      }"
       @mousedown="startDrag"
     >
       <!-- Main webcam component -->
