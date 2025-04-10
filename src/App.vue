@@ -32,6 +32,8 @@ import WebcamContainer from './components/WebcamContainer.vue';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+  --brand-color: rgba(168, 177, 255, 1);
+  --brand-color-darker: rgb(125, 135, 227);
 }
 
 html, body {

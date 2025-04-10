@@ -47,7 +47,7 @@ function handleCloseApp() {
 
 <style scoped>
 .window-controls {
-  width: 100%;
+  width: calc(100% - 20px);
   position: absolute;
   top: 10px;
   right: 10px;
@@ -79,27 +79,28 @@ function handleCloseApp() {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 12px;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
+  font-size: 1rem;
+  background-color: var(--brand-color);
+  color: black;
   transition: background-color 0.2s;
   -webkit-app-region: no-drag;
   /* Make buttons not draggable */
 }
 
 .control-button:hover {
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: var(--brand-color-darker);
+  color: white;
 }
 
 .control-button.close:hover {
   background-color: #ff3e00;
 }
 
-.control-button.settings {
+/* .control-button.settings {
   font-size: 12px;
 }
 
 .control-button.settings:hover {
   background-color: rgba(0, 0, 0, 1);
-}
+} */
 </style>

@@ -47,7 +47,6 @@ async function openWebsite() {
   bottom: 10px;
   left: 10px;
   display: flex;
-  align-items: center;
   opacity: 0;
   transition: opacity 0.3s;
   z-index: 100;
@@ -55,16 +54,16 @@ async function openWebsite() {
 
 .branding {
   display: flex;
-  align-items: center;
   background-color: rgba(0, 0, 0, 0.7);
   padding: 5px 10px;
   border-radius: 20px;
   cursor: pointer;
   transition: background-color 0.2s;
+  border: 0;
 }
 
 .branding:hover {
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(168, 177, 255, 0.7);
 }
 
 .logo {
