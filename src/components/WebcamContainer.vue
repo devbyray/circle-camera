@@ -18,6 +18,7 @@ const cameraSize = ref(300);
 const borderRadius = ref(50); // 50% = circle, 0% = square
 const borderWidth = ref(0);
 const borderColor = ref('#ffffff');
+const showSettings = ref(false);
 
 // Initialize cameras
 async function initializeCameras() {
@@ -45,6 +46,12 @@ function handleResize(change: number) {
   if (cameraSize.value < 100) {
     cameraSize.value = 100;
   }
+}
+
+// Toggle settings menu
+function toggleSettings() {
+  showSettings.value = !showSettings.value;
+  console.log('Settings toggled:', showSettings.value);
 }
 
 
@@ -115,6 +122,7 @@ onUnmounted(() => {
       <WindowControls
         :cameraSize="cameraSize"
         @resize="handleResize"
+        @toggleSettings="toggleSettings"
       />
 
       <!-- Menu Bar for settings -->
@@ -124,6 +132,7 @@ onUnmounted(() => {
         :borderColor="borderColor"
         :availableCameras="availableCameras"
         :selectedCameraId="selectedCameraId"
+        :isVisible="showSettings"
         @update:borderRadius="(val: number) => { borderRadius = val; console.log('Border radius updated:', val); }"
         @update:borderWidth="(val: number) => { borderWidth = val; console.log('Border width updated:', val); }"
         @update:borderColor="(val: string) => { borderColor = val; console.log('Border color updated:', val); }"

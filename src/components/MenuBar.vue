@@ -5,7 +5,22 @@ defineProps<{
   borderColor: string;
   availableCameras: MediaDeviceInfo[];
   selectedCameraId: string;
+  isVisible: boolean;
 }>();
+
+// Function to get a short name for the camera
+function getShortCameraName(camera: MediaDeviceInfo): string {
+  if (camera.label) {
+    // If we have a label, use the first part of it
+    const parts = camera.label.split(' ');
+    if (parts.length > 1) {
+      return parts[0]; // Return first word
+    }
+    return camera.label.substring(0, 10) + (camera.label.length > 10 ? '...' : '');
+  }
+  // If no label, use a short version of the device ID
+  return `Cam ${camera.deviceId.substring(0, 4)}`;
+}
 
 const emit = defineEmits([
   'update:borderRadius',
@@ -63,18 +78,19 @@ function setGreenBorder() {
 </script>
 
 <template>
-  <div class="menu-bar">
+  <div class="menu-bar" :class="{ 'visible': isVisible }">
     <div class="menu-section">
       <h3>Camera</h3>
-      <select
-        class="camera-select"
-        :value="selectedCameraId"
-        @change="(e) => emit('update:selectedCameraId', (e.target as HTMLSelectElement).value)"
-      >
-        <option v-for="camera in availableCameras" :key="camera.deviceId" :value="camera.deviceId">
-          {{ camera.label || `Camera ${camera.deviceId.substring(0, 5)}...` }}
-        </option>
-      </select>
+      <div class="camera-buttons">
+        <button
+          v-for="camera in availableCameras"
+          :key="camera.deviceId"
+          :class="{ active: selectedCameraId === camera.deviceId }"
+          @click="emit('update:selectedCameraId', camera.deviceId)"
+        >
+          {{ getShortCameraName(camera) }}
+        </button>
+      </div>
     </div>
     <div class="menu-section">
       <h3>Shape</h3>
@@ -140,11 +156,13 @@ function setGreenBorder() {
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
+  visibility: hidden;
 }
 
-#container:hover .menu-bar {
+.menu-bar.visible {
   opacity: 1;
   pointer-events: auto;
+  visibility: visible;
 }
 
 .menu-section {
@@ -217,19 +235,10 @@ button.active {
   background-color: #00ff00;
 }
 
-.camera-select {
-  width: 100%;
-  padding: 5px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 12px;
+.camera-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
   margin-bottom: 5px;
-}
-
-.camera-select option {
-  background-color: #333;
-  color: white;
 }
 </style>
