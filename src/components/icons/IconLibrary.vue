@@ -43,7 +43,7 @@ const iconMap = {
 };
 
 // Get the icon component based on the name prop
-const IconComponent = iconMap[props.name];
+const IconComponent = iconMap[props.name as keyof typeof iconMap];
 </script>
 
 <template>

@@ -45,8 +45,8 @@ function handleCameraError(message: string) {
 function handleResize(change: number) {
   cameraSize.value += change;
   // Ensure minimum and maximum size
-  if (cameraSize.value < 100) {
-    cameraSize.value = 100;
+  if (cameraSize.value <= 200) {
+    cameraSize.value = 200;
   } else if (cameraSize.value > 350) {
     cameraSize.value = 350;
   }
@@ -93,15 +93,40 @@ async function setupEventListeners() {
   }
 }
 
+// Handle keyboard shortcuts
+function handleKeyboardShortcuts(event: KeyboardEvent) {
+  // Check if any input elements are focused
+  const activeElement = document.activeElement;
+  const isInputFocused = activeElement instanceof HTMLInputElement ||
+                         activeElement instanceof HTMLTextAreaElement ||
+                         activeElement instanceof HTMLSelectElement;
+
+  // Only process shortcuts if no input is focused
+  if (!isInputFocused) {
+    // Zoom in with '+' or '=' keys
+    if (event.key === '+' || event.key === '=') {
+      handleResize(20);
+    }
+    // Zoom out with '-' key
+    else if (event.key === '-') {
+      handleResize(-20);
+    }
+  }
+}
+
 // Lifecycle hooks
 onMounted(async () => {
   await initializeCameras();
   await setupEventListeners();
+
+  // Add keyboard event listener
+  window.addEventListener('keydown', handleKeyboardShortcuts);
 });
 
 // No need to call stopCamera here as it's handled in the WebcamCircle component
 onUnmounted(() => {
-  // Clean up if needed
+  // Remove keyboard event listener
+  window.removeEventListener('keydown', handleKeyboardShortcuts);
 });
 </script>
 
