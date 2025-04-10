@@ -3,9 +3,9 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { getAvailableCameras } from '../utils/cameraUtils';
 import { startDrag } from '../utils/windowUtils';
 import WebcamCircle from './WebcamCircle.vue';
-import ControlsDropdown from './ControlsDropdown.vue';
 import WindowControls from './WindowControls.vue';
 import MenuBar from './MenuBar.vue';
+import BrandingBar from './BrandingBar.vue';
 
 // State
 const availableCameras = ref<MediaDeviceInfo[]>([]);
@@ -111,12 +111,10 @@ onUnmounted(() => {
         @error="handleCameraError"
       />
 
-      <!-- Camera selection dropdown - visible on hover -->
-      <ControlsDropdown
-        :availableCameras="availableCameras"
-        :selectedCameraId="selectedCameraId"
-        @update:selectedCameraId="selectedCameraId = $event"
-      />
+      <!-- Camera selection is now in the settings menu -->
+
+      <!-- Branding bar - visible on hover -->
+      <BrandingBar />
 
       <!-- Window controls - visible on hover -->
       <WindowControls
@@ -137,6 +135,7 @@ onUnmounted(() => {
         @update:borderWidth="(val: number) => { borderWidth = val; console.log('Border width updated:', val); }"
         @update:borderColor="(val: string) => { borderColor = val; console.log('Border color updated:', val); }"
         @update:selectedCameraId="(val: string) => { selectedCameraId = val; console.log('Camera updated:', val); }"
+        @close="showSettings = false"
       />
     </div>
 
@@ -168,7 +167,8 @@ onUnmounted(() => {
 }
 
 .webcam-container:hover :deep(.controls-dropdown),
-.webcam-container:hover :deep(.window-controls) {
+.webcam-container:hover :deep(.window-controls),
+.webcam-container:hover :deep(.branding-bar) {
   opacity: 1; /* Make controls visible on hover */
   pointer-events: auto; /* Ensure controls are clickable */
 }

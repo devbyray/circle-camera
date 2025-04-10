@@ -26,7 +26,8 @@ const emit = defineEmits([
   'update:borderRadius',
   'update:borderWidth',
   'update:borderColor',
-  'update:selectedCameraId'
+  'update:selectedCameraId',
+  'close'
 ]);
 
 // Shape options
@@ -79,6 +80,12 @@ function setGreenBorder() {
 
 <template>
   <div class="menu-bar" :class="{ 'visible': isVisible }">
+    <div class="menu-header">
+      <h2>Circle Camera Settings</h2>
+      <button class="close-button" @click="emit('close')" title="Close settings">
+        ✕
+      </button>
+    </div>
     <div class="menu-section">
       <h3>Camera</h3>
       <div class="camera-buttons">
@@ -163,6 +170,40 @@ function setGreenBorder() {
   opacity: 1;
   pointer-events: auto;
   visibility: visible;
+}
+
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 10px;
+}
+
+.menu-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.close-button {
+  background-color: rgba(255, 0, 0, 0.7);
+  border: none;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.2s;
+}
+
+.close-button:hover {
+  background-color: rgba(255, 0, 0, 0.9);
 }
 
 .menu-section {
