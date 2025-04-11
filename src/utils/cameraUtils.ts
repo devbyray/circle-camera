@@ -64,8 +64,26 @@ export async function getAvailableCameras(): Promise<MediaDeviceInfo[]> {
 
     console.log('Getting available cameras...', mediaDevices);
 
+    // Check if we're in a Tauri environment
+    const isTauri = window.__TAURI__ !== undefined;
+
+    if (isTauri) {
+      try {
+        // Import Tauri API for camera permissions
+        const { invoke } = await import('@tauri-apps/api/core');
+        // This will trigger the permission prompt on Windows if needed
+        await invoke('dummy_camera_permission_check');
+      } catch (e) {
+        // Ignore errors from the invoke call, as we're just using it to trigger permissions
+        console.log('Permission check completed');
+      }
+    }
+
     // First request camera access to get proper labels
-    const initialStream = await mediaDevices.getUserMedia({ video: true });
+    const initialStream = await mediaDevices.getUserMedia({
+      video: true,
+      audio: false
+    });
 
     // Now enumerate devices to get the labels
     const devices = await mediaDevices.enumerateDevices();

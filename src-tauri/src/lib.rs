@@ -1,6 +1,12 @@
 use tauri::Manager;
 use tauri::Emitter;
 
+#[cfg(target_os = "windows")]
+use window_vibrancy::{apply_blur, clear_blur};
+
+#[cfg(target_os = "macos")]
+use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
+
 // Command to close the app
 #[tauri::command]
 fn close_app(window: tauri::Window) -> Result<(), String> {
@@ -115,11 +121,47 @@ async fn open_url(url: String) -> Result<(), String> {
     Ok(())
 }
 
+// Dummy command to trigger camera permission dialog on Windows
+#[tauri::command]
+fn dummy_camera_permission_check() -> Result<(), String> {
+    // This function doesn't need to do anything
+    // Just invoking it will trigger the permission dialog on Windows
+    Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_shell::init())
+        .setup(|app| {
+            // Get the main window
+            let main_window = app.get_webview_window("main").expect("Failed to get main window");
+
+            // Apply platform-specific window effects
+            #[cfg(target_os = "macos")]
+            {
+                // On macOS, apply vibrancy effect to make the window truly transparent
+                apply_vibrancy(&main_window, NSVisualEffectMaterial::HudWindow, None, None)
+                    .expect("Failed to apply vibrancy effect on macOS");
+            }
+
+            #[cfg(target_os = "windows")]
+            {
+                // On Windows, apply a clear effect with full transparency to remove the shadow
+                // This will make the window fully transparent outside the webcam area
+
+                // First apply blur to make the window transparent
+                apply_blur(&main_window, None)
+                    .expect("Failed to apply blur effect on Windows");
+
+                // Then clear the blur to remove any system-added effects like shadows
+                clear_blur(&main_window)
+                    .expect("Failed to clear blur effect on Windows");
+            }
+
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             close_app,
             set_border_radius,
@@ -136,7 +178,8 @@ pub fn run() {
             set_black_border,
             set_red_border,
             set_blue_border,
-            set_green_border
+            set_green_border,
+            dummy_camera_permission_check
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

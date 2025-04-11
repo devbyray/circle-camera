@@ -68,6 +68,7 @@ watch(() => props.selectedCameraId, async (newCameraId) => {
   display: flex;
   justify-content: center;
   align-items: center;
+  /* Apply shadow only to the webcam content */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
