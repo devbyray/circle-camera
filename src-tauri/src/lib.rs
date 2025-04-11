@@ -158,6 +158,10 @@ pub fn run() {
                 // Then clear the blur to remove any system-added effects like shadows
                 clear_blur(&main_window)
                     .expect("Failed to clear blur effect on Windows");
+
+                // Explicitly disable the window shadow
+                main_window.set_shadow(false)
+                    .expect("Failed to disable window shadow on Windows");
             }
 
             Ok(())

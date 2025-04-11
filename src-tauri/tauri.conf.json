@@ -20,7 +20,8 @@
         "alwaysOnTop": true,
         "resizable": true,
         "userAgent": "Circle Camera App",
-        "center": true
+        "center": true,
+        "shadow": false
       }
     ],
     "trayIcon": {
