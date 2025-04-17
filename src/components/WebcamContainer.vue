@@ -8,6 +8,7 @@ import MenuBar from './MenuBar.vue';
 import BrandingBar from './BrandingBar.vue';
 import ColorPickerOverlay from './ColorPickerOverlay.vue';
 import UpdateChecker from './UpdateChecker.vue';
+import UpdateOverlay from './UpdateOverlay.vue';
 
 // State
 const availableCameras = ref<MediaDeviceInfo[]>([]);
@@ -15,13 +16,21 @@ const selectedCameraId = ref<string>('');
 const errorMessage = ref("");
 const cameraSize = ref(300);
 
-
 // Camera appearance settings
 const borderRadius = ref(100); // 50% = circle, 0% = square
 const borderWidth = ref(0);
 const borderColor = ref('#ffffff');
 const showSettings = ref(false);
 const showColorPicker = ref(false);
+
+// Update state
+const updateAvailable = ref(false);
+const showUpdateOverlay = ref(false);
+const updateInfo = ref({ version: '', notes: '', releaseUrl: '' });
+const updateProgress = ref(0);
+const updateInProgress = ref(false);
+const updateError = ref('');
+const updateCheckerRef = ref(null);
 
 // Initialize cameras
 async function initializeCameras() {
@@ -63,6 +72,55 @@ function toggleSettings() {
 function toggleColorPicker() {
   showColorPicker.value = !showColorPicker.value;
   console.log('Color picker toggled:', showColorPicker.value);
+}
+
+// Toggle update overlay
+function toggleUpdateOverlay() {
+  showUpdateOverlay.value = !showUpdateOverlay.value;
+  console.log('Update overlay toggled:', showUpdateOverlay.value);
+}
+
+// Update handlers
+function handleUpdateAvailable(info) {
+  updateAvailable.value = true;
+  updateInfo.value = info;
+  console.log('Update available:', info);
+}
+
+function handleUpdateProgress(progress) {
+  updateProgress.value = progress;
+  updateInProgress.value = true;
+}
+
+function handleUpdateError(error) {
+  updateError.value = error instanceof Error ? error.message : String(error);
+  updateInProgress.value = false;
+}
+
+function handleUpdateComplete() {
+  updateInProgress.value = false;
+  // Show some success message or notification
+  alert('Update installed successfully! The application will now restart.');
+}
+
+async function installUpdate() {
+  if (!updateCheckerRef.value) return;
+  
+  try {
+    updateInProgress.value = true;
+    const success = await updateCheckerRef.value.installUpdate();
+    if (!success) {
+      updateError.value = 'Failed to install update';
+    }
+  } catch (error) {
+    updateError.value = error instanceof Error ? error.message : String(error);
+    updateInProgress.value = false;
+  }
+}
+
+function skipUpdate() {
+  showUpdateOverlay.value = false;
+  // Perhaps store a preference not to show this update again
 }
 
 // Listen for events from Rust
@@ -186,17 +244,17 @@ onUnmounted(() => {
         @error="handleCameraError"
       />
 
-      <!-- Camera selection is now in the settings menu -->
-
       <!-- Branding bar - visible on hover -->
       <BrandingBar />
 
       <!-- Window controls - visible on hover -->
       <WindowControls
         :cameraSize="cameraSize"
+        :updateAvailable="updateAvailable"
         @resize="handleResize"
         @toggleSettings="toggleSettings"
         @toggleColorPicker="toggleColorPicker"
+        @toggleUpdateOverlay="toggleUpdateOverlay"
       />
 
       <!-- Menu Bar for settings -->
@@ -221,9 +279,27 @@ onUnmounted(() => {
         @update:borderColor="(val: string) => { borderColor = val; console.log('Border color updated:', val); }"
         @close="showColorPicker = false"
       />
-
-      <!-- Update Checker -->
-      <UpdateChecker />
+      
+      <!-- Update Checker (invisible logic component) -->
+      <UpdateChecker
+        ref="updateCheckerRef"
+        @update-available="handleUpdateAvailable"
+        @update-progress="handleUpdateProgress"
+        @update-error="handleUpdateError"
+        @update-complete="handleUpdateComplete"
+      />
+      
+      <!-- Update Overlay -->
+      <UpdateOverlay
+        :isVisible="showUpdateOverlay"
+        :updateInfo="updateInfo"
+        :updateProgress="updateProgress"
+        :updateInProgress="updateInProgress"
+        :updateError="updateError"
+        @install-update="installUpdate"
+        @skip-update="skipUpdate"
+        @close="showUpdateOverlay = false"
+      />
     </div>
 
     <div class="error-message" v-if="errorMessage">

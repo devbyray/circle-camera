@@ -35,10 +35,10 @@ const updateJson = {
       signature: '',
       url: `https://github.com/${repoOwner}/${repoName}/releases/download/${version}/Circle.Camera_${version}_aarch64.dmg`
     },
-    'windows-x86_64': {
-      signature: '',
-      url: `https://github.com/${repoOwner}/${repoName}/releases/download/${version}/Circle.Camera_${version}_x64-setup.exe`
-    }
+    // 'windows-x86_64': {
+    //   signature: '',
+    //   url: `https://github.com/${repoOwner}/${repoName}/releases/download/${version}/Circle.Camera_${version}_x64-setup.exe`
+    // }
   }
 };
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { version as appVersion } from '../../package.json';
 
 const updateAvailable = ref(false);
@@ -7,6 +7,9 @@ const updateVersion = ref('');
 const updateInProgress = ref(false);
 const updateError = ref('');
 let updateObject = ref<any | null>(null);
+
+// Emit events instead of showing UI directly
+const emit = defineEmits(['update-available', 'update-progress', 'update-error', 'update-complete']);
 
 // Development mode flag - set to true to simulate an update notification in dev mode
 const DEV_MODE = true;
@@ -21,12 +24,18 @@ onMounted(async () => {
   try {
     console.log('Checking for updates...');
     
-    // In DEV_MODE, show a simulated update
+    // In DEV_MODE, simulate an update
     if (DEV_MODE) {
       console.log('DEV MODE: Simulating update notification');
       setTimeout(() => {
         updateAvailable.value = true;
         updateVersion.value = '0.3.0';
+        // Emit event for parent components to handle
+        emit('update-available', {
+          version: '0.3.0',
+          notes: 'This is a simulated update with new features',
+          releaseUrl: 'https://github.com/devbyray/circle-camera/releases/tag/0.3.0'
+        });
       }, 2000); // Delay for 2 seconds to simulate network request
       return;
     }
@@ -78,22 +87,35 @@ onMounted(async () => {
       console.log('Update available:', update.version);
       updateAvailable.value = true;
       updateVersion.value = update.version;
+      
+      // Emit event for parent components to handle
+      emit('update-available', {
+        version: update.version,
+        notes: update.notes,
+        releaseUrl: `https://github.com/devbyray/circle-camera/releases/tag/${update.version}`
+      });
     } else {
       console.log('No update available');
     }
   } catch (error) {
     console.error('Error checking for updates:', error);
     updateError.value = error instanceof Error ? error.message : String(error);
+    emit('update-error', error);
   }
 });
 
+// External method that can be called by the parent component
+function installUpdate() {
+  return handleInstallUpdate();
+}
+
 // Function to install the update
 async function handleInstallUpdate() {
-  if (!updateAvailable.value) return;
+  if (!updateAvailable.value) return false;
   
   try {
     updateInProgress.value = true;
-    console.log('Starting update installation...');
+    emit('update-progress', 0); // Start progress
     
     // In DEV_MODE, simulate installation process
     if (DEV_MODE) {
@@ -102,94 +124,44 @@ async function handleInstallUpdate() {
       for (let i = 0; i <= 100; i += 10) {
         await new Promise(resolve => setTimeout(resolve, 200));
         console.log(`Download progress: ${i}%`);
+        emit('update-progress', i);
       }
       
       // Show success message
-      alert('Update installed successfully! App would restart in production.');
+      emit('update-complete');
       updateInProgress.value = false;
-      return;
+      return true;
     }
     
     // Real update installation for production
     if (updateObject.value) {
       // Download and install the update
-      await updateObject.value.downloadAndInstall();
+      await updateObject.value.downloadAndInstall(
+        (progress) => {
+          console.log('Download progress:', progress);
+          emit('update-progress', progress);
+        }
+      );
+      
+      // The app will restart after installation, so we won't reach this point
+      updateInProgress.value = false;
+      return true;
     } else {
       throw new Error('Update object not available');
     }
-    
-    // The app will restart after installation, so we won't reach this point
-    updateInProgress.value = false;
   } catch (error) {
     console.error('Error installing update:', error);
     updateError.value = error instanceof Error ? error.message : String(error);
     updateInProgress.value = false;
+    emit('update-error', error);
+    return false;
   }
 }
+
+// Expose methods to parent components
+defineExpose({ installUpdate });
 </script>
 
 <template>
-  <div v-if="updateAvailable" class="update-notification">
-    <div class="update-message">
-      <span>New version {{ updateVersion }} available!</span>
-      <button 
-        @click="handleInstallUpdate" 
-        :disabled="updateInProgress"
-        class="update-button"
-      >
-        {{ updateInProgress ? 'Updating...' : 'Update Now' }}
-      </button>
-    </div>
-    <div v-if="updateError" class="update-error">{{ updateError }}</div>
-  </div>
+  <!-- No UI rendering in this component anymore, it just emits events -->
 </template>
-
-<style scoped>
-.update-notification {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  background-color: rgba(0, 0, 0, 0.7);
-  border-radius: 8px;
-  padding: 8px 12px;
-  z-index: 1000;
-  max-width: 250px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.update-message {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  color: white;
-  font-size: 12px;
-}
-
-.update-button {
-  background-color: #4c7af0;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 4px 8px;
-  cursor: pointer;
-  font-size: 12px;
-  transition: background-color 0.2s;
-}
-
-.update-button:hover:not(:disabled) {
-  background-color: #5c8aff;
-}
-
-.update-button:disabled {
-  background-color: #4c7af080;
-  cursor: not-allowed;
-}
-
-.update-error {
-  color: #ff6b6b;
-  font-size: 10px;
-  margin-top: 4px;
-}
-</style>
