@@ -61,6 +61,10 @@ jobs:
         uses: pnpm/action-setup@v3
         with:
           version: 8
+          run_install: false
+
+      - name: Add PNPM to PATH
+        run: echo "PATH=$(pnpm -g bin):$PATH" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: pnpm install

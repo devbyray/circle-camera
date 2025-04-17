@@ -74,12 +74,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'pnpm'
 
       - name: Install PNPM
         uses: pnpm/action-setup@v3
         with:
           version: 8
+          run_install: false
+
+      # Add the PNPM bin directory to PATH
+      - name: Add PNPM to PATH
+        run: echo "PATH=$(pnpm -g bin):$PATH" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: pnpm install
