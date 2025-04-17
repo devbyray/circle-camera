@@ -25,11 +25,15 @@ on:
         required: false
         type: string
         description: "Version override (uses package.json if not provided)"
+      should_build:
+        required: false
+        type: boolean
+        default: true
+        description: "Whether to build the application"
 
 jobs:
   build-macos:
     runs-on: macos-latest
-    if: inputs.should_build != false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
