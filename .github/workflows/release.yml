@@ -90,13 +90,13 @@ jobs:
         run: pnpm tauri build --target x86_64-apple-darwin
 
       - name: Upload macOS (Apple Silicon) Artifact 
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: circle-camera-macos-aarch64
           path: src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
 
       - name: Upload macOS (Intel) Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: circle-camera-macos-x64
           path: src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/*.dmg
@@ -147,7 +147,7 @@ jobs:
   #       run: pnpm tauri build --target x86_64-pc-windows-msvc
   #
   #     - name: Upload Windows Artifact
-  #       uses: actions/upload-artifact@v3
+  #       uses: actions/upload-artifact@v4
   #       with:
   #         name: circle-camera-windows
   #         path: src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
@@ -175,7 +175,7 @@ jobs:
         run: pnpm install
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
 
