@@ -17,7 +17,7 @@
 		"docs:dev": "vitepress dev docs",
 		"docs:build": "vitepress build docs",
 		"docs:preview": "vitepress preview docs",
-		"release": "standard-version"
+		"release": "release-it"
 	},
 	"dependencies": {
 		"@iconify-icons/icomoon-free": "^1.2.3",
@@ -35,7 +35,7 @@
 	"devDependencies": {
 		"@tauri-apps/cli": "^2",
 		"@vitejs/plugin-vue": "^5.2.1",
-		"standard-version": "^9.5.0",
+		"release-it": "^18.1.2",
 		"typescript": "~5.6.2",
 		"vite": "^6.0.3",
 		"vitepress": "^1.6.3",
