@@ -1,26 +1,30 @@
 [package]
 name = "circle-camera"
 version = "0.2.0"
-description = "A sleek, minimalist webcam app that displays your camera feed in a perfect circle."
-authors = ["devbyray"]
+description = "A minimal webcam app that displays in a circle"
+authors = ["Dev By RayRay"]
+license = "EUPL"
+repository = "https://github.com/devbyray/circle-camera"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-# The `_lib` suffix may seem redundant but it is necessary
-# to make the lib name unique and wouldn't conflict with the bin name.
-# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
 name = "circle_camera_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2", features = [] }
+tauri-build = { version = "2.0.0", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [ "tray-icon", "macos-private-api"] }
-tauri-plugin-opener = "2"
-tauri-plugin-shell = "2"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+tauri = { version = "2.0.0", features = ["devtools", "tray-icon", "macos-private-api"] }
+tauri-plugin-shell = "2.0.0"
+tauri-plugin-opener = "2.0.0" 
+tauri-plugin-updater = "2.0.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 
+[features]
+# this feature is used for production builds or when `devPath` points to the filesystem
+# DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]

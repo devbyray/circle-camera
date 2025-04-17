@@ -1,0 +1,257 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'package.json'
+      - 'src-tauri/tauri.conf.json'
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.check.outputs.should_release }}
+      version: ${{ steps.check.outputs.version }}
+      previous_version: ${{ steps.check.outputs.previous_version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check version changes
+        id: check
+        run: |
+          git diff HEAD^ HEAD --name-only
+          
+          # Get current version from package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          
+          # Get previous commit's package.json version
+          git checkout HEAD~1 package.json
+          PREVIOUS_VERSION=$(node -p "require('./package.json').version")
+          git checkout HEAD package.json
+          
+          echo "Current version: $CURRENT_VERSION"
+          echo "Previous version: $PREVIOUS_VERSION"
+          
+          # Determine if we should create a release
+          if [ "$CURRENT_VERSION" != "$PREVIOUS_VERSION" ]; then
+            echo "Version changed from $PREVIOUS_VERSION to $CURRENT_VERSION"
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+            echo "previous_version=$PREVIOUS_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "No version change detected"
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          fi
+
+  build-macos:
+    needs: check-version
+    if: needs.check-version.outputs.should_release == 'true'
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - name: Install additional dependencies
+        run: |
+          rustup target add aarch64-apple-darwin x86_64-apple-darwin
+          rustup default stable
+          rustup show
+          cargo --version
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build for macOS (Apple Silicon)
+        run: pnpm tauri build --target aarch64-apple-darwin
+
+      - name: Build for macOS (Intel)
+        run: pnpm tauri build --target x86_64-apple-darwin
+
+      - name: Upload macOS (Apple Silicon) Artifact 
+        uses: actions/upload-artifact@v3
+        with:
+          name: circle-camera-macos-aarch64
+          path: src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
+
+      - name: Upload macOS (Intel) Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: circle-camera-macos-x64
+          path: src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/*.dmg
+
+  # Windows build is commented out as Windows is not officially supported
+  # build-windows:
+  #   needs: check-version
+  #   if: needs.check-version.outputs.should_release == 'true'
+  #   runs-on: windows-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '18'
+  #         cache: 'pnpm'
+  #
+  #     - name: Install Rust stable
+  #       uses: dtolnay/rust-toolchain@stable
+  #       with:
+  #         components: rustfmt, clippy
+  #         targets: x86_64-pc-windows-msvc
+  #
+  #     - name: Install additional dependencies
+  #       run: |
+  #         rustup target add x86_64-pc-windows-msvc
+  #         rustup default stable
+  #         rustup show
+  #         cargo --version
+  #
+  #     - name: Install PNPM
+  #       uses: pnpm/action-setup@v3
+  #       with:
+  #         version: 8
+  #
+  #     - name: Install dependencies
+  #       run: pnpm install
+  #
+  #     - name: Install Windows WebView2
+  #       run: |
+  #         $ProgressPreference = 'SilentlyContinue'
+  #         Invoke-WebRequest "https://go.microsoft.com/fwlink/p/?LinkId=2124703" -OutFile "MicrosoftEdgeWebview2Setup.exe"
+  #         Start-Process -FilePath "MicrosoftEdgeWebview2Setup.exe" -Args "/silent /install" -Verb RunAs -Wait
+  #
+  #     - name: Build for Windows
+  #       run: pnpm tauri build --target x86_64-pc-windows-msvc
+  #
+  #     - name: Upload Windows Artifact
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: circle-camera-windows
+  #         path: src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
+
+  create-release:
+    needs: [check-version, build-macos]
+    # Remove build-windows from dependencies since Windows is not supported
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+
+      - name: List all artifacts
+        run: ls -la artifacts/*
+
+      - name: Generate update JSON
+        run: |
+          mkdir -p release-assets
+          cp artifacts/circle-camera-macos-aarch64/*.dmg release-assets/
+          cp artifacts/circle-camera-macos-x64/*.dmg release-assets/
+          # Windows asset copy is removed as it's not supported
+          
+          # Generate latest.json 
+          node ./scripts/generate-update-json.js
+          cp latest.json release-assets/
+
+      - name: Create Draft Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.check-version.outputs.version }}
+          release_name: Circle Camera v${{ needs.check-version.outputs.version }}
+          draft: true
+          prerelease: false
+          body: |
+            # Circle Camera ${{ needs.check-version.outputs.version }}
+            
+            Automated release from version ${{ needs.check-version.outputs.previous_version }} to ${{ needs.check-version.outputs.version }}
+            
+            ## Platform Support
+            
+            Circle Camera is officially supported on macOS only (both Intel and Apple Silicon).
+            Windows is not officially supported at this time.
+            
+            ## How to Test This Release
+            
+            1. Download the appropriate installer for your platform
+            2. Install the application
+            3. Verify that the app works as expected
+            4. Test the automatic update system
+            
+            ## Changelog
+            
+            *Please add your changelog here before publishing the release*
+
+      - name: Upload macOS Apple Silicon Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release-assets/Circle.Camera_${{ needs.check-version.outputs.version }}_aarch64.dmg
+          asset_name: Circle.Camera_${{ needs.check-version.outputs.version }}_aarch64.dmg
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS Intel Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release-assets/Circle.Camera_${{ needs.check-version.outputs.version }}_x64.dmg
+          asset_name: Circle.Camera_${{ needs.check-version.outputs.version }}_x64.dmg
+          asset_content_type: application/octet-stream
+
+      # Windows asset upload is removed as it's not supported
+
+      - name: Upload latest.json Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release-assets/latest.json
+          asset_name: latest.json
+          asset_content_type: application/json

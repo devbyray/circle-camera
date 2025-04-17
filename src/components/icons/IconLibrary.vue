@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
 import { 
   Settings as SettingsIcon,
   Close as CloseIcon,
@@ -10,7 +9,8 @@ import {
   ColorPalette as ColorPaletteIcon,
   Square as SquareIcon,
   Ellipse as CircleIcon,
-  Resize as ResizeIcon
+  Resize as ResizeIcon,
+  CloudDownload as Download
 } from '@vicons/ionicons5';
 
 const props = defineProps({
@@ -39,7 +39,8 @@ const iconMap = {
   'color-palette': ColorPaletteIcon,
   'square': SquareIcon,
   'circle': CircleIcon,
-  'resize': ResizeIcon
+  'resize': ResizeIcon,
+  'download': Download
 };
 
 // Get the icon component based on the name prop
