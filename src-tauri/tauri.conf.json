@@ -58,14 +58,15 @@
       "exceptionDomain": "",
       "frameworks": [],
       "providerShortName": null,
-      "signingIdentity": null
+      "signingIdentity": null,
+      "minimumSystemVersion": "10.15"
     }
   },
   "plugins": {
     "updater": {
       "active": true,
       "endpoints": [
-        "http://localhost:8080/latest.json"
+        "https://github.com/devbyray/circle-camera/releases/latest/download/latest.json"
       ],
       "dialog": true,
       "pubkey": ""
