@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
 import { 
   Settings as SettingsIcon,
   Close as CloseIcon,

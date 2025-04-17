@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { version as appVersion } from '../../package.json';
 
 // Define TypeScript interface for Update object
@@ -19,9 +19,12 @@ let updateObject = ref<UpdateInfo | null>(null);
 // Emit events instead of showing UI directly
 const emit = defineEmits(['update-available', 'update-progress', 'update-error', 'update-complete']);
 
-// Dynamically determine if we're in development mode
-// In production builds, import.meta.env.DEV will be false
-const DEV_MODE = import.meta.env.DEV;
+// Determine if we're in development mode, allowing override via environment variable
+// You can set VITE_FORCE_UPDATE_DEV_MODE=true or VITE_FORCE_UPDATE_DEV_MODE=false in .env file
+const ENV_OVERRIDE = import.meta.env.VITE_FORCE_UPDATE_DEV_MODE;
+const DEV_MODE = ENV_OVERRIDE !== undefined 
+  ? ENV_OVERRIDE === 'true'
+  : import.meta.env.DEV;
 
 // Generate a simulated update version based on the current app version
 function generateSimulatedUpdateVersion() {

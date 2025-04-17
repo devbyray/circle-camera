@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import IconLibrary from './icons/IconLibrary.vue';
-import { ref } from 'vue';
 
 const props = defineProps({
   isVisible: {
