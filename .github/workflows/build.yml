@@ -42,7 +42,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'pnpm'
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -61,13 +60,13 @@ jobs:
         uses: pnpm/action-setup@v3
         with:
           version: 8
-          run_install: false
+          run_install: true
 
-      - name: Add PNPM to PATH
-        run: echo "PATH=$(pnpm -g bin):$PATH" >> $GITHUB_ENV
-
-      - name: Install dependencies
-        run: pnpm install
+      - name: Setup Node.js with PNPM cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
 
       - name: Get version from package.json if not provided
         if: inputs.version == ''
