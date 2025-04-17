@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { version as appVersion } from '../../package.json';
 
-// Define TypeScript interface for Update object
+// Update the interface to match Tauri's Update type structure
 interface UpdateInfo {
   version: string;
   notes?: string;
@@ -114,19 +114,35 @@ onMounted(async () => {
     console.log('Current app version:', currentVersion);
     
     // Check for updates
-    const update = await check() as UpdateInfo;
-    updateObject.value = update;
+    const updateResult = await check();
     
-    if (update) {
-      console.log('Update available:', update.version);
+    if (updateResult) {
+      // Create a wrapper that adapts the Tauri Update type to our UpdateInfo interface
+      updateObject.value = {
+        version: updateResult.version,
+        notes: updateResult.body || '',  // Change 'notes' to 'body' which is the correct property
+        date: updateResult.date || '',
+        downloadAndInstall: (progressCallback?: (progress: number) => void) => {
+          return updateResult.downloadAndInstall((event) => {
+            // Convert the DownloadEvent to a simple number progress
+            if (event.event === 'Progress' && progressCallback && 'data' in event) {
+              // Use the chunkLength as a proxy for progress percentage
+              // or implement a custom progress calculation
+              progressCallback(event.data.chunkLength);
+            }
+          });
+        }
+      };
+      
+      console.log('Update available:', updateObject.value.version);
       updateAvailable.value = true;
-      updateVersion.value = update.version;
+      updateVersion.value = updateObject.value.version;
       
       // Emit event for parent components to handle
       emit('update-available', {
-        version: update.version,
-        notes: update.notes || 'No release notes available',
-        releaseUrl: `https://github.com/devbyray/circle-camera/releases/tag/${update.version}`
+        version: updateObject.value.version,
+        notes: updateObject.value.notes || 'No release notes available',
+        releaseUrl: `https://github.com/devbyray/circle-camera/releases/tag/${updateObject.value.version}`
       });
     } else {
       console.log('No update available');
