@@ -12,6 +12,8 @@
     "build:macos": "pnpm tauri build --target aarch64-apple-darwin",
     "build:windows": "pnpm tauri build --target x86_64-pc-windows-msvc",
     "build:installer": "pnpm tauri build && mkdir -p installers && cp src-tauri/target/release/bundle/dmg/circle-camera_*.dmg installers/",
+    "generate:update-json": "node scripts/generate-update-json.js",
+    "serve:update": "node scripts/serve-update.js",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
@@ -22,6 +24,7 @@
     "@tauri-apps/api": "^2.4.1",
     "@tauri-apps/plugin-opener": "^2",
     "@tauri-apps/plugin-shell": "^2.2.1",
+    "@tauri-apps/plugin-updater": "^2.7.0",
     "@vercel/analytics": "^1.5.0",
     "@vicons/ionicons5": "^0.13.0",
     "@vueform/slider": "^2.1.10",

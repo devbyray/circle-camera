@@ -7,6 +7,7 @@ import WindowControls from './WindowControls.vue';
 import MenuBar from './MenuBar.vue';
 import BrandingBar from './BrandingBar.vue';
 import ColorPickerOverlay from './ColorPickerOverlay.vue';
+import UpdateChecker from './UpdateChecker.vue';
 
 // State
 const availableCameras = ref<MediaDeviceInfo[]>([]);
@@ -64,30 +65,66 @@ function toggleColorPicker() {
   console.log('Color picker toggled:', showColorPicker.value);
 }
 
-
-
 // Listen for events from Rust
 async function setupEventListeners() {
   try {
-    const { listen } = await import('@tauri-apps/api/event');
+    // Check if we're running in a Tauri context
+    if (!(window && window.__TAURI__ !== undefined)) {
+      console.log('Tauri API not available - skipping event listeners');
+      return;
+    }
+    
+    // Dynamically import the event API
+    let listen;
+    try {
+      const eventModule = await import('@tauri-apps/api/event');
+      listen = eventModule.listen;
+      
+      if (typeof listen !== 'function') {
+        console.warn('Tauri event API not available or not a function - skipping event listeners');
+        return;
+      }
+    } catch (error) {
+      console.error('Failed to import event module:', error);
+      return;
+    }
 
-    // Listen for border radius changes
-    listen('set-border-radius', (event) => {
-      console.log('Received border radius event:', event);
-      borderRadius.value = event.payload as number;
-    });
+    console.log('Setting up Tauri event listeners...');
 
-    // Listen for border width changes
-    listen('set-border-width', (event) => {
-      console.log('Received border width event:', event);
-      borderWidth.value = event.payload as number;
-    });
+    try {
+      // Listen for border radius changes
+      const unlistenRadius = await listen('set-border-radius', (event) => {
+        console.log('Received border radius event:', event);
+        borderRadius.value = event.payload as number;
+      });
+      console.log('Border radius listener setup complete');
+    } catch (e) {
+      console.error('Error setting up border-radius listener:', e);
+    }
 
-    // Listen for border color changes
-    listen('set-border-color', (event) => {
-      console.log('Received border color event:', event);
-      borderColor.value = event.payload as string;
-    });
+    try {
+      // Listen for border width changes
+      const unlistenWidth = await listen('set-border-width', (event) => {
+        console.log('Received border width event:', event);
+        borderWidth.value = event.payload as number;
+      });
+      console.log('Border width listener setup complete');
+    } catch (e) {
+      console.error('Error setting up border-width listener:', e);
+    }
+
+    try {
+      // Listen for border color changes
+      const unlistenColor = await listen('set-border-color', (event) => {
+        console.log('Received border color event:', event);
+        borderColor.value = event.payload as string;
+      });
+      console.log('Border color listener setup complete');
+    } catch (e) {
+      console.error('Error setting up border-color listener:', e);
+    }
+    
+    console.log('Tauri event listeners setup complete');
   } catch (error) {
     console.error('Error setting up event listeners:', error);
   }
@@ -184,6 +221,9 @@ onUnmounted(() => {
         @update:borderColor="(val: string) => { borderColor = val; console.log('Border color updated:', val); }"
         @close="showColorPicker = false"
       />
+
+      <!-- Update Checker -->
+      <UpdateChecker />
     </div>
 
     <div class="error-message" v-if="errorMessage">

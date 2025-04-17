@@ -33,7 +33,7 @@
         "default-src": "'self'",
         "media-src": "'self' blob: mediadevices:",
         "img-src": "'self' data: blob:",
-        "connect-src": "'self' mediadevices:",
+        "connect-src": "'self' mediadevices: https://github.com http://localhost:8080",
         "style-src": "'self' 'unsafe-inline'"
       }
     },
@@ -59,6 +59,16 @@
       "frameworks": [],
       "providerShortName": null,
       "signingIdentity": null
+    }
+  },
+  "plugins": {
+    "updater": {
+      "active": true,
+      "endpoints": [
+        "http://localhost:8080/latest.json"
+      ],
+      "dialog": true,
+      "pubkey": ""
     }
   }
 }
