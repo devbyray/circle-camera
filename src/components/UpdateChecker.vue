@@ -11,8 +11,9 @@ let updateObject = ref<any | null>(null);
 // Emit events instead of showing UI directly
 const emit = defineEmits(['update-available', 'update-progress', 'update-error', 'update-complete']);
 
-// Development mode flag - set to true to simulate an update notification in dev mode
-const DEV_MODE = true;
+// Dynamically determine if we're in development mode
+// In production builds, import.meta.env.DEV will be false
+const DEV_MODE = import.meta.env.DEV;
 
 // Check if we're running in a Tauri context
 function isTauriAvailable() {
@@ -23,6 +24,7 @@ function isTauriAvailable() {
 onMounted(async () => {
   try {
     console.log('Checking for updates...');
+    console.log('Running in development mode:', DEV_MODE);
     
     // In DEV_MODE, simulate an update
     if (DEV_MODE) {
