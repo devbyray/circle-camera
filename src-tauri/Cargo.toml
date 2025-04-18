@@ -1,6 +1,6 @@
 [package]
 name = "circle-camera"
-version = "0.2.0"
+version = "0.3.0"
 description = "A minimal webcam app that displays in a circle"
 authors = ["Dev By RayRay"]
 license = "EUPL"
@@ -8,6 +8,10 @@ repository = "https://github.com/devbyray/circle-camera"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+# Configure specific target optimizations
+[target.aarch64-apple-darwin]
+rustflags = ["-C", "link-arg=-undefined", "-C", "link-arg=dynamic_lookup"]
 
 [lib]
 name = "circle_camera_lib"

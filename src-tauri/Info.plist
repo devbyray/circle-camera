@@ -8,5 +8,11 @@
     <string>This app needs access to your microphone for video recording.</string>
     <key>NSCameraUseContinuityCameraDeviceType</key>
     <true/>
+    <key>LSMinimumSystemVersion</key>
+    <string>10.15</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
 </dict>
 </plist>
