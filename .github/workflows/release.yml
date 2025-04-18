@@ -74,15 +74,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'pnpm'
+          # Remove cache since we need to set up pnpm first
 
       - name: Install PNPM
         uses: pnpm/action-setup@v3
         with:
           version: 8
-
-      - name: Install dependencies
-        run: pnpm install
+          run_install: true
+          
+      # Add caching after pnpm is available
+      - name: Setup Node.js with PNPM cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
 
       - name: Download all artifacts
         uses: actions/download-artifact@v4
