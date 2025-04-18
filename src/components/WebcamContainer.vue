@@ -30,7 +30,10 @@ const updateInfo = ref({ version: '', notes: '', releaseUrl: '' });
 const updateProgress = ref(0);
 const updateInProgress = ref(false);
 const updateError = ref('');
-const updateCheckerRef = ref(null);
+const updateCheckerRef = ref<InstanceType<typeof UpdateChecker> | null>(null);
+
+// Store unsubscribe functions to properly clean them up when component is unmounted
+const unsubscribeFunctions = ref<Array<() => void>>([]);
 
 // Initialize cameras
 async function initializeCameras() {
@@ -81,18 +84,18 @@ function toggleUpdateOverlay() {
 }
 
 // Update handlers
-function handleUpdateAvailable(info) {
+function handleUpdateAvailable(info: { version: string; notes: string; releaseUrl: string }) {
   updateAvailable.value = true;
   updateInfo.value = info;
   console.log('Update available:', info);
 }
 
-function handleUpdateProgress(progress) {
+function handleUpdateProgress(progress: number) {
   updateProgress.value = progress;
   updateInProgress.value = true;
 }
 
-function handleUpdateError(error) {
+function handleUpdateError(error: Error | string) {
   updateError.value = error instanceof Error ? error.message : String(error);
   updateInProgress.value = false;
 }
@@ -155,6 +158,7 @@ async function setupEventListeners() {
         console.log('Received border radius event:', event);
         borderRadius.value = event.payload as number;
       });
+      unsubscribeFunctions.value.push(unlistenRadius);
       console.log('Border radius listener setup complete');
     } catch (e) {
       console.error('Error setting up border-radius listener:', e);
@@ -166,6 +170,7 @@ async function setupEventListeners() {
         console.log('Received border width event:', event);
         borderWidth.value = event.payload as number;
       });
+      unsubscribeFunctions.value.push(unlistenWidth);
       console.log('Border width listener setup complete');
     } catch (e) {
       console.error('Error setting up border-width listener:', e);
@@ -177,6 +182,7 @@ async function setupEventListeners() {
         console.log('Received border color event:', event);
         borderColor.value = event.payload as string;
       });
+      unsubscribeFunctions.value.push(unlistenColor);
       console.log('Border color listener setup complete');
     } catch (e) {
       console.error('Error setting up border-color listener:', e);
@@ -222,6 +228,15 @@ onMounted(async () => {
 onUnmounted(() => {
   // Remove keyboard event listener
   window.removeEventListener('keydown', handleKeyboardShortcuts);
+  
+  // Unsubscribe from all event listeners
+  unsubscribeFunctions.value.forEach(unsubscribe => {
+    try {
+      unsubscribe();
+    } catch (e) {
+      console.error('Error unsubscribing from event:', e);
+    }
+  });
 });
 </script>
 
