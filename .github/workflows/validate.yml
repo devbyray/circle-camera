@@ -21,25 +21,30 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - name: Install additional dependencies
+        run: |
+          rustup target add aarch64-apple-darwin x86_64-apple-darwin
+          rustup default stable
+          rustup show
+          cargo --version
+
       - name: Install PNPM
         uses: pnpm/action-setup@v3
         with:
           version: 8
           run_install: true
 
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Setup Node.js with PNPM cache
+        uses: actions/setup-node@v4
         with:
-          components: rustfmt, clippy
+          node-version: '18'
+          cache: 'pnpm'
 
-      - name: TypeScript validation
-        run: pnpm vue-tsc --noEmit
-
-      - name: Tauri config validation
-        run: pnpm tauri info
-        
-      - name: Rust validation
-        run: |
-          cd src-tauri
-          # This will only check if the code compiles without building binaries
-          RUSTFLAGS="-Awarnings" cargo check --all-features
+      - name: Run validation
+        run: pnpm run validate
