@@ -39,4 +39,7 @@ jobs:
         run: pnpm tauri info
         
       - name: Rust validation
-        run: cd src-tauri && cargo check
+        run: |
+          cd src-tauri
+          # This will only check if the code compiles without building binaries
+          RUSTFLAGS="-Awarnings" cargo check --all-features
