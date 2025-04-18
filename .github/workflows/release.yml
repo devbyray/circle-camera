@@ -174,22 +174,6 @@ jobs:
             
             *Please add your changelog here before publishing the release*
 
-      - name: Find macOS Apple Silicon artifact
-        id: find_aarch64
-        run: |
-          AARCH64_DMG=$(find artifacts -type f -name "*aarch64.dmg" | head -n 1)
-          echo "Found Apple Silicon DMG: $AARCH64_DMG"
-          echo "path=$AARCH64_DMG" >> $GITHUB_OUTPUT
-          echo "filename=$(basename $AARCH64_DMG)" >> $GITHUB_OUTPUT
-
-      - name: Find macOS Intel artifact
-        id: find_x64
-        run: |
-          X64_DMG=$(find artifacts -type f -name "*x64.dmg" | head -n 1)
-          echo "Found Intel DMG: $X64_DMG" 
-          echo "path=$X64_DMG" >> $GITHUB_OUTPUT
-          echo "filename=$(basename $X64_DMG)" >> $GITHUB_OUTPUT
-
       - name: Upload macOS Apple Silicon Asset
         uses: actions/upload-release-asset@v1
         env:
