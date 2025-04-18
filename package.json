@@ -8,6 +8,7 @@
 		"build": "vue-tsc --noEmit && vite build",
 		"preview": "vite preview",
 		"tauri": "tauri",
+		 "validate": "vue-tsc --noEmit && cd src-tauri && cargo check",
 		"icons": "pnpm tauri icon public/icon.svg",
 		"build:macos": "pnpm tauri build --target aarch64-apple-darwin",
 		"build:windows": "pnpm tauri build --target x86_64-pc-windows-msvc",

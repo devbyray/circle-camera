@@ -12,6 +12,11 @@ on:
         type: boolean
         default: true
         description: "Whether to build the application"
+      validate_only:
+        required: false
+        type: boolean
+        default: false
+        description: "Only run validation without building"
     outputs:
       macos_aarch64_artifact:
         description: "Name of the macOS ARM64 build artifact"
@@ -30,10 +35,36 @@ on:
         type: boolean
         default: true
         description: "Whether to build the application"
+      validate_only:
+        required: false
+        type: boolean
+        default: false
+        description: "Only run validation without building"
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: true
+
+      - name: Run validation
+        run: pnpm run validate
+
   build-macos:
     runs-on: macos-latest
+    if: inputs.validate_only == 'false'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
