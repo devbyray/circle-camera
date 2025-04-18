@@ -66,7 +66,6 @@ jobs:
     needs: [check-version, build]
     if: needs.check-version.outputs.should_release == 'true'
     runs-on: ubuntu-latest
-    # Add explicit permissions for creating releases
     permissions:
       contents: write
       issues: write
@@ -79,7 +78,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          # Remove cache since we need to set up pnpm first
 
       - name: Install PNPM
         uses: pnpm/action-setup@v3
@@ -87,7 +85,6 @@ jobs:
           version: 8
           run_install: true
           
-      # Add caching after pnpm is available
       - name: Setup Node.js with PNPM cache
         uses: actions/setup-node@v4
         with:
@@ -99,23 +96,45 @@ jobs:
         with:
           path: artifacts
 
-      - name: List all artifact directories
+      - name: Examine artifact structure
         run: |
-          ls -la artifacts
-          find artifacts -type d
-          find artifacts -type f
+          echo "Listing base artifacts directory:"
+          ls -la artifacts || echo "No artifacts directory found."
+          
+          echo "Searching for DMG files in any location:"
+          find . -name "*.dmg" || echo "No DMG files found."
+          
+          # Create the release assets directory
+          mkdir -p release-assets
+
+      - name: Find macOS Apple Silicon artifact
+        id: find_aarch64
+        run: |
+          AARCH64_DMG=$(find artifacts -name "*aarch64.dmg" | head -n 1)
+          if [ -z "$AARCH64_DMG" ]; then
+            echo "ERROR: Could not find Apple Silicon DMG file"
+            exit 1
+          fi
+          echo "Found Apple Silicon DMG: $AARCH64_DMG"
+          echo "path=$AARCH64_DMG" >> $GITHUB_OUTPUT
+          echo "filename=$(basename $AARCH64_DMG)" >> $GITHUB_OUTPUT
+          cp "$AARCH64_DMG" release-assets/
+
+      - name: Find macOS Intel artifact
+        id: find_x64
+        run: |
+          X64_DMG=$(find artifacts -name "*x64.dmg" | head -n 1)
+          if [ -z "$X64_DMG" ]; then
+            echo "ERROR: Could not find Intel DMG file"
+            exit 1
+          fi
+          echo "Found Intel DMG: $X64_DMG"
+          echo "path=$X64_DMG" >> $GITHUB_OUTPUT
+          echo "filename=$(basename $X64_DMG)" >> $GITHUB_OUTPUT
+          cp "$X64_DMG" release-assets/
 
       - name: Generate update JSON
         run: |
-          mkdir -p release-assets
-          
-          # Debug: Show what artifacts we have
-          echo "Contents of artifacts directory:"
-          find artifacts -type f -name "*.dmg" | sort
-          
-          # Copy DMG files from artifacts directory
-          find artifacts -type f -name "*.dmg" -exec cp {} release-assets/ \;
-          
           # List the actual files to verify the names
           echo "Files in release-assets directory:"
           ls -la release-assets/
