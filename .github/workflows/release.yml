@@ -99,8 +99,11 @@ jobs:
         with:
           path: artifacts
 
-      - name: List all artifacts
-        run: ls -la artifacts/*
+      - name: List all artifact directories
+        run: |
+          ls -la artifacts
+          find artifacts -type d
+          find artifacts -type f
 
       - name: Generate update JSON
         run: |
@@ -152,14 +155,30 @@ jobs:
             
             *Please add your changelog here before publishing the release*
 
+      - name: Find macOS Apple Silicon artifact
+        id: find_aarch64
+        run: |
+          AARCH64_DMG=$(find artifacts -type f -name "*aarch64.dmg" | head -n 1)
+          echo "Found Apple Silicon DMG: $AARCH64_DMG"
+          echo "path=$AARCH64_DMG" >> $GITHUB_OUTPUT
+          echo "filename=$(basename $AARCH64_DMG)" >> $GITHUB_OUTPUT
+
+      - name: Find macOS Intel artifact
+        id: find_x64
+        run: |
+          X64_DMG=$(find artifacts -type f -name "*x64.dmg" | head -n 1)
+          echo "Found Intel DMG: $X64_DMG" 
+          echo "path=$X64_DMG" >> $GITHUB_OUTPUT
+          echo "filename=$(basename $X64_DMG)" >> $GITHUB_OUTPUT
+
       - name: Upload macOS Apple Silicon Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: "./artifacts/circle-camera-macos-aarch64/Circle Camera_${{ needs.check-version.outputs.version }}_aarch64.dmg"
-          asset_name: "Circle Camera_${{ needs.check-version.outputs.version }}_aarch64.dmg"
+          asset_path: ${{ steps.find_aarch64.outputs.path }}
+          asset_name: ${{ steps.find_aarch64.outputs.filename }}
           asset_content_type: application/octet-stream
 
       - name: Upload macOS Intel Asset
@@ -168,8 +187,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: "./artifacts/circle-camera-macos-x64/Circle Camera_${{ needs.check-version.outputs.version }}_x64.dmg"
-          asset_name: "Circle Camera_${{ needs.check-version.outputs.version }}_x64.dmg"
+          asset_path: ${{ steps.find_x64.outputs.path }}
+          asset_name: ${{ steps.find_x64.outputs.filename }}
           asset_content_type: application/octet-stream
 
       - name: Upload latest.json Asset
