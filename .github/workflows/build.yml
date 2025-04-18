@@ -12,6 +12,11 @@ on:
         type: boolean
         default: true
         description: "Whether to build the application"
+      validate_only:
+        required: false
+        type: boolean
+        default: false
+        description: "Only run validation without building"
     outputs:
       macos_aarch64_artifact:
         description: "Name of the macOS ARM64 build artifact"
@@ -30,10 +35,20 @@ on:
         type: boolean
         default: true
         description: "Whether to build the application"
+      validate_only:
+        required: false
+        type: boolean
+        default: false
+        description: "Only run validation without building"
 
 jobs:
+  validate:
+    uses: ./.github/workflows/validate.yml
+
   build-macos:
+    needs: validate
     runs-on: macos-latest
+    if: inputs.validate_only == 'false'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

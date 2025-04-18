@@ -1,6 +1,6 @@
 [package]
 name = "circle-camera"
-version = "0.3.0"
+version = "0.3.1"
 description = "A minimal webcam app that displays in a circle"
 authors = ["Dev By RayRay"]
 license = "EUPL"
