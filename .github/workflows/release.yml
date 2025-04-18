@@ -107,7 +107,10 @@ jobs:
           mkdir -p release-assets
           cp artifacts/circle-camera-macos-aarch64/*.dmg release-assets/
           cp artifacts/circle-camera-macos-x64/*.dmg release-assets/
-          # Windows asset copy is removed as it's not supported
+          
+          # List the actual files to verify the names
+          echo "Files in release-assets directory:"
+          ls -la release-assets/
           
           # Generate latest.json 
           node ./scripts/generate-update-json.js
@@ -150,8 +153,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release-assets/Circle.Camera_${{ needs.check-version.outputs.version }}_aarch64.dmg
-          asset_name: Circle.Camera_${{ needs.check-version.outputs.version }}_aarch64.dmg
+          asset_path: ./release-assets/Circle\ Camera_${{ needs.check-version.outputs.version }}_aarch64.dmg
+          asset_name: Circle\ Camera_${{ needs.check-version.outputs.version }}_aarch64.dmg
           asset_content_type: application/octet-stream
 
       - name: Upload macOS Intel Asset
@@ -160,8 +163,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release-assets/Circle.Camera_${{ needs.check-version.outputs.version }}_x64.dmg
-          asset_name: Circle.Camera_${{ needs.check-version.outputs.version }}_x64.dmg
+          asset_path: ./release-assets/Circle\ Camera_${{ needs.check-version.outputs.version }}_x64.dmg
+          asset_name: Circle\ Camera_${{ needs.check-version.outputs.version }}_x64.dmg
           asset_content_type: application/octet-stream
 
       - name: Upload latest.json Asset
