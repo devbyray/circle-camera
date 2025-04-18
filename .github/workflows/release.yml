@@ -105,8 +105,13 @@ jobs:
       - name: Generate update JSON
         run: |
           mkdir -p release-assets
-          cp artifacts/circle-camera-macos-aarch64/*.dmg release-assets/
-          cp artifacts/circle-camera-macos-x64/*.dmg release-assets/
+          
+          # Debug: Show what artifacts we have
+          echo "Contents of artifacts directory:"
+          find artifacts -type f -name "*.dmg" | sort
+          
+          # Copy DMG files from artifacts directory
+          find artifacts -type f -name "*.dmg" -exec cp {} release-assets/ \;
           
           # List the actual files to verify the names
           echo "Files in release-assets directory:"
@@ -153,8 +158,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release-assets/Circle\ Camera_${{ needs.check-version.outputs.version }}_aarch64.dmg
-          asset_name: Circle\ Camera_${{ needs.check-version.outputs.version }}_aarch64.dmg
+          asset_path: "./artifacts/circle-camera-macos-aarch64/Circle Camera_${{ needs.check-version.outputs.version }}_aarch64.dmg"
+          asset_name: "Circle Camera_${{ needs.check-version.outputs.version }}_aarch64.dmg"
           asset_content_type: application/octet-stream
 
       - name: Upload macOS Intel Asset
@@ -163,8 +168,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release-assets/Circle\ Camera_${{ needs.check-version.outputs.version }}_x64.dmg
-          asset_name: Circle\ Camera_${{ needs.check-version.outputs.version }}_x64.dmg
+          asset_path: "./artifacts/circle-camera-macos-x64/Circle Camera_${{ needs.check-version.outputs.version }}_x64.dmg"
+          asset_name: "Circle Camera_${{ needs.check-version.outputs.version }}_x64.dmg"
           asset_content_type: application/octet-stream
 
       - name: Upload latest.json Asset
