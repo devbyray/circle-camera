@@ -36,7 +36,7 @@ function generateSimulatedUpdateVersion() {
     versionParts[1] += 1;
   } else {
     // Fallback if version format is unexpected
-    return '0.3.1'; 
+    return '0.3.2'; 
   }
   
   // Return the new version string
