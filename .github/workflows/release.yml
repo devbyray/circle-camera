@@ -101,6 +101,9 @@ jobs:
           echo "Listing base artifacts directory:"
           ls -la artifacts || echo "No artifacts directory found."
           
+          echo "Listing installers directory:"
+          ls -la installers || echo "No installers directory found."
+          
           echo "Searching for DMG files in any location:"
           find . -name "*.dmg" || echo "No DMG files found."
           
@@ -110,11 +113,26 @@ jobs:
       - name: Find macOS Apple Silicon artifact
         id: find_aarch64
         run: |
-          AARCH64_DMG=$(find artifacts -name "*aarch64.dmg" | head -n 1)
+          # First try to find in artifacts directory from build job
+          AARCH64_DMG=$(find artifacts -name "*aarch64.dmg" 2>/dev/null | head -n 1)
+          
+          # If not found, try installers directory
+          if [ -z "$AARCH64_DMG" ]; then
+            echo "Apple Silicon DMG not found in artifacts, checking installers directory..."
+            AARCH64_DMG=$(find installers -name "*aarch64.dmg" 2>/dev/null | head -n 1)
+          fi
+          
+          # If still not found, look anywhere in the repository
+          if [ -z "$AARCH64_DMG" ]; then
+            echo "Apple Silicon DMG not found in installers, checking entire repository..."
+            AARCH64_DMG=$(find . -name "*aarch64.dmg" 2>/dev/null | head -n 1)
+          fi
+          
           if [ -z "$AARCH64_DMG" ]; then
             echo "ERROR: Could not find Apple Silicon DMG file"
             exit 1
           fi
+          
           echo "Found Apple Silicon DMG: $AARCH64_DMG"
           echo "path=$AARCH64_DMG" >> $GITHUB_OUTPUT
           echo "filename=$(basename $AARCH64_DMG)" >> $GITHUB_OUTPUT
@@ -123,11 +141,26 @@ jobs:
       - name: Find macOS Intel artifact
         id: find_x64
         run: |
-          X64_DMG=$(find artifacts -name "*x64.dmg" | head -n 1)
+          # First try to find in artifacts directory from build job
+          X64_DMG=$(find artifacts -name "*x64.dmg" 2>/dev/null | head -n 1)
+          
+          # If not found, try installers directory
+          if [ -z "$X64_DMG" ]; then
+            echo "Intel DMG not found in artifacts, checking installers directory..."
+            X64_DMG=$(find installers -name "*x64.dmg" 2>/dev/null | head -n 1)
+          fi
+          
+          # If still not found, look anywhere in the repository
+          if [ -z "$X64_DMG" ]; then
+            echo "Intel DMG not found in installers, checking entire repository..."
+            X64_DMG=$(find . -name "*x64.dmg" 2>/dev/null | head -n 1)
+          fi
+          
           if [ -z "$X64_DMG" ]; then
             echo "ERROR: Could not find Intel DMG file"
             exit 1
           fi
+          
           echo "Found Intel DMG: $X64_DMG"
           echo "path=$X64_DMG" >> $GITHUB_OUTPUT
           echo "filename=$(basename $X64_DMG)" >> $GITHUB_OUTPUT
