@@ -175,6 +175,17 @@ jobs:
             echo "Copied to release-assets/$(basename $X64_DMG)"
           fi
 
+      - name: Check Intel DMG presence before upload
+        id: check_intel_dmg
+        run: |
+          if [ "${{ steps.find_x64.outputs.found }}" == "true" ] && [ -f "release-assets/${{ steps.find_x64.outputs.filename }}" ]; then
+            echo "Intel DMG file exists and will be uploaded"
+            echo "can_upload=true" >> $GITHUB_OUTPUT
+          else
+            echo "Intel DMG file does not exist, skipping upload"
+            echo "can_upload=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Generate update JSON
         run: |
           # List the actual files to verify the names
@@ -240,7 +251,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Upload macOS Intel DMG
-        if: steps.find_x64.outputs.found == 'true'
+        if: steps.check_intel_dmg.outputs.can_upload == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
