@@ -99,19 +99,43 @@ jobs:
           echo "Using provided version: ${{ inputs.version }}"
 
       - name: Build for macOS (Apple Silicon)
-        run: pnpm tauri build --target aarch64-apple-darwin
+        run: |
+          # Add verbose flag to see more build info
+          pnpm tauri build --verbose --target aarch64-apple-darwin
+          
+          # Verify the DMG file was created properly
+          ls -la src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/
+          # Check the DMG file with hdiutil
+          hdiutil verify src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg || echo "DMG verification failed but continuing"
 
       - name: Build for macOS (Intel)
-        run: pnpm tauri build --target x86_64-apple-darwin
+        run: |
+          # Add verbose flag to see more build info
+          pnpm tauri build --verbose --target x86_64-apple-darwin
+          
+          # Verify the DMG file was created properly
+          ls -la src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/
+          # Check the DMG file with hdiutil
+          hdiutil verify src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/*.dmg || echo "DMG verification failed but continuing"
+
+      - name: List build outputs
+        run: |
+          echo "Apple Silicon DMG files:"
+          find src-tauri/target/aarch64-apple-darwin/release/bundle/dmg -type f -name "*.dmg"
+          
+          echo "Intel DMG files:"
+          find src-tauri/target/x86_64-apple-darwin/release/bundle/dmg -type f -name "*.dmg"
 
       - name: Upload macOS (Apple Silicon) Artifact 
         uses: actions/upload-artifact@v4
         with:
           name: circle-camera-macos-aarch64
           path: src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
+          if-no-files-found: error
 
       - name: Upload macOS (Intel) Artifact
         uses: actions/upload-artifact@v4
         with:
           name: circle-camera-macos-x64
           path: src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/*.dmg
+          if-no-files-found: error

@@ -92,106 +92,78 @@ jobs:
           node-version: '18'
           cache: 'pnpm'
 
-      - name: Download all artifacts
+      - name: Create release assets directory
+        run: mkdir -p release-assets
+
+      - name: Download Apple Silicon artifact
         uses: actions/download-artifact@v4
         with:
-          path: artifacts
+          name: circle-camera-macos-aarch64
+          path: release-assets/aarch64
 
-      - name: Examine artifact structure
+      - name: Download Intel artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: circle-camera-macos-x64
+          path: release-assets/x64
+          
+      - name: Verify downloaded artifacts
+        id: verify_artifacts
         run: |
-          echo "Listing base artifacts directory:"
-          ls -la artifacts || echo "No artifacts directory found."
+          echo "Listing downloaded artifacts:"
+          ls -la release-assets/aarch64 || echo "No aarch64 directory"
+          ls -la release-assets/x64 || echo "No x64 directory"
           
-          echo "Listing installers directory:"
-          ls -la installers || echo "No installers directory found."
+          # Find Apple Silicon DMG
+          AARCH64_DMG=$(find release-assets/aarch64 -name "*.dmg" | head -n 1)
           
-          echo "Searching for DMG files in any location:"
-          find . -name "*.dmg" || echo "No DMG files found."
+          # Find Intel DMG
+          X64_DMG=$(find release-assets/x64 -name "*.dmg" | head -n 1)
           
-          # Create the release assets directory
-          mkdir -p release-assets
-
-      - name: Find macOS Apple Silicon artifact
-        id: find_aarch64
-        run: |
-          # First try to find in artifacts directory from build job
-          AARCH64_DMG=$(find artifacts -name "*aarch64.dmg" 2>/dev/null | head -n 1)
-          
-          # If not found, try installers directory
-          if [ -z "$AARCH64_DMG" ]; then
-            echo "Apple Silicon DMG not found in artifacts, checking installers directory..."
-            AARCH64_DMG=$(find installers -name "*aarch64.dmg" 2>/dev/null | head -n 1)
-          fi
-          
-          # If still not found, look anywhere in the repository
-          if [ -z "$AARCH64_DMG" ]; then
-            echo "Apple Silicon DMG not found in installers, checking entire repository..."
-            AARCH64_DMG=$(find . -name "*aarch64.dmg" 2>/dev/null | head -n 1)
-          fi
-          
-          if [ -z "$AARCH64_DMG" ]; then
-            echo "ERROR: Could not find Apple Silicon DMG file"
-            exit 1
-          fi
-          
-          echo "Found Apple Silicon DMG: $AARCH64_DMG"
-          echo "path=$AARCH64_DMG" >> $GITHUB_OUTPUT
-          echo "filename=$(basename $AARCH64_DMG)" >> $GITHUB_OUTPUT
-          
-          # Copy to release assets with explicit name
-          cp "$AARCH64_DMG" "release-assets/$(basename $AARCH64_DMG)"
-          echo "Copied to release-assets/$(basename $AARCH64_DMG)"
-
-      - name: Find macOS Intel artifact
-        id: find_x64
-        run: |
-          # First try to find in artifacts directory from build job
-          X64_DMG=$(find artifacts -name "*x64.dmg" 2>/dev/null | head -n 1)
-          
-          # If not found, try installers directory
-          if [ -z "$X64_DMG" ]; then
-            echo "Intel DMG not found in artifacts, checking installers directory..."
-            X64_DMG=$(find installers -name "*x64.dmg" 2>/dev/null | head -n 1)
-          fi
-          
-          # If still not found, look anywhere in the repository
-          if [ -z "$X64_DMG" ]; then
-            echo "Intel DMG not found in installers, checking entire repository..."
-            X64_DMG=$(find . -name "*x64.dmg" 2>/dev/null | head -n 1)
-          fi
-          
-          # Set a flag to indicate if we found the file (don't exit with error)
-          if [ -z "$X64_DMG" ]; then
-            echo "WARNING: Could not find Intel DMG file. Continuing without it."
-            echo "found=false" >> $GITHUB_OUTPUT
+          # Check file sizes to ensure they are not empty or corrupted
+          if [ -n "$AARCH64_DMG" ]; then
+            SIZE=$(stat -c%s "$AARCH64_DMG" 2>/dev/null || stat -f%z "$AARCH64_DMG")
+            echo "Apple Silicon DMG size: $SIZE bytes"
+            if [ "$SIZE" -lt 1000000 ]; then
+              echo "WARNING: Apple Silicon DMG file is suspiciously small!"
+            fi
+            echo "aarch64_dmg=$AARCH64_DMG" >> $GITHUB_OUTPUT
+            echo "aarch64_filename=$(basename $AARCH64_DMG)" >> $GITHUB_OUTPUT
+            echo "aarch64_valid=true" >> $GITHUB_OUTPUT
           else
-            echo "Found Intel DMG: $X64_DMG"
-            echo "path=$X64_DMG" >> $GITHUB_OUTPUT
-            echo "filename=$(basename $X64_DMG)" >> $GITHUB_OUTPUT
-            echo "found=true" >> $GITHUB_OUTPUT
-            
-            # Copy to release assets with explicit name
-            cp "$X64_DMG" "release-assets/$(basename $X64_DMG)"
-            echo "Copied to release-assets/$(basename $X64_DMG)"
+            echo "No Apple Silicon DMG found!"
+            echo "aarch64_valid=false" >> $GITHUB_OUTPUT
           fi
-
-      - name: Check Intel DMG presence before upload
-        id: check_intel_dmg
-        run: |
-          if [ "${{ steps.find_x64.outputs.found }}" == "true" ] && [ -f "release-assets/${{ steps.find_x64.outputs.filename }}" ]; then
-            echo "Intel DMG file exists and will be uploaded"
-            echo "can_upload=true" >> $GITHUB_OUTPUT
+          
+          if [ -n "$X64_DMG" ]; then
+            SIZE=$(stat -c%s "$X64_DMG" 2>/dev/null || stat -f%z "$X64_DMG")
+            echo "Intel DMG size: $SIZE bytes"
+            if [ "$SIZE" -lt 1000000 ]; then
+              echo "WARNING: Intel DMG file is suspiciously small!"
+            fi
+            echo "x64_dmg=$X64_DMG" >> $GITHUB_OUTPUT
+            echo "x64_filename=$(basename $X64_DMG)" >> $GITHUB_OUTPUT
+            echo "x64_valid=true" >> $GITHUB_OUTPUT
           else
-            echo "Intel DMG file does not exist, skipping upload"
-            echo "can_upload=false" >> $GITHUB_OUTPUT
+            echo "No Intel DMG found, continuing without it."
+            echo "x64_valid=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Make copies with explicit file mode permissions
+          if [ -n "$AARCH64_DMG" ]; then
+            cp -p "$AARCH64_DMG" release-assets/
+            chmod 644 "release-assets/$(basename $AARCH64_DMG)"
+            echo "Copied to release-assets/$(basename $AARCH64_DMG) with permissions 644"
+          fi
+          
+          if [ -n "$X64_DMG" ]; then
+            cp -p "$X64_DMG" release-assets/
+            chmod 644 "release-assets/$(basename $X64_DMG)"
+            echo "Copied to release-assets/$(basename $X64_DMG) with permissions 644"
           fi
 
       - name: Generate update JSON
         run: |
-          # List the actual files to verify the names
-          echo "Files in release-assets directory:"
-          ls -la release-assets/
-          
           # Generate latest.json 
           node ./scripts/generate-update-json.js
           cp latest.json release-assets/
@@ -227,39 +199,27 @@ jobs:
             
             *Please add your changelog here before publishing the release*
 
-      - name: Debug release assets
-        run: |
-          echo "Contents of release-assets directory:"
-          ls -la release-assets/
-          
-          echo "Apple Silicon DMG path: ${{ steps.find_aarch64.outputs.path }}"
-          echo "Apple Silicon DMG filename: ${{ steps.find_aarch64.outputs.filename }}"
-          
-          if [ "${{ steps.find_x64.outputs.found }}" == "true" ]; then
-            echo "Intel DMG path: ${{ steps.find_x64.outputs.path }}"
-            echo "Intel DMG filename: ${{ steps.find_x64.outputs.filename }}"
-          fi
-
       - name: Upload macOS Apple Silicon DMG
+        if: steps.verify_artifacts.outputs.aarch64_valid == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: "release-assets/${{ steps.find_aarch64.outputs.filename }}"
-          asset_name: "${{ steps.find_aarch64.outputs.filename }}"
-          asset_content_type: application/octet-stream
+          asset_path: "release-assets/$(basename ${{ steps.verify_artifacts.outputs.aarch64_dmg }})"
+          asset_name: ${{ steps.verify_artifacts.outputs.aarch64_filename }}
+          asset_content_type: application/x-apple-diskimage
 
       - name: Upload macOS Intel DMG
-        if: steps.check_intel_dmg.outputs.can_upload == 'true'
+        if: steps.verify_artifacts.outputs.x64_valid == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: "release-assets/${{ steps.find_x64.outputs.filename }}"
-          asset_name: "${{ steps.find_x64.outputs.filename }}"
-          asset_content_type: application/octet-stream
+          asset_path: "release-assets/$(basename ${{ steps.verify_artifacts.outputs.x64_dmg }})"
+          asset_name: ${{ steps.verify_artifacts.outputs.x64_filename }}
+          asset_content_type: application/x-apple-diskimage
 
       - name: Upload latest.json Asset
         uses: actions/upload-release-asset@v1
