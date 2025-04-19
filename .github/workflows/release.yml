@@ -156,15 +156,17 @@ jobs:
             X64_DMG=$(find . -name "*x64.dmg" 2>/dev/null | head -n 1)
           fi
           
+          # Set a flag to indicate if we found the file (don't exit with error)
           if [ -z "$X64_DMG" ]; then
-            echo "ERROR: Could not find Intel DMG file"
-            exit 1
+            echo "WARNING: Could not find Intel DMG file. Continuing without it."
+            echo "found=false" >> $GITHUB_OUTPUT
+          else
+            echo "Found Intel DMG: $X64_DMG"
+            echo "path=$X64_DMG" >> $GITHUB_OUTPUT
+            echo "filename=$(basename $X64_DMG)" >> $GITHUB_OUTPUT
+            echo "found=true" >> $GITHUB_OUTPUT
+            cp "$X64_DMG" release-assets/
           fi
-          
-          echo "Found Intel DMG: $X64_DMG"
-          echo "path=$X64_DMG" >> $GITHUB_OUTPUT
-          echo "filename=$(basename $X64_DMG)" >> $GITHUB_OUTPUT
-          cp "$X64_DMG" release-assets/
 
       - name: Generate update JSON
         run: |
@@ -218,6 +220,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Upload macOS Intel Asset
+        if: steps.find_x64.outputs.found == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
