@@ -58,7 +58,7 @@ if gh release view "$TAG" > /dev/null 2>&1; then
 else
   gh release create "$TAG" \
     --draft \
-    --title "Release $TAG" \
+    --title "$VERSION" \
     --notes "Draft release for version $VERSION."
   echo "Draft release $TAG created."
 fi
@@ -67,5 +67,7 @@ echo "Uploading asset: $DMG_PATH"
 gh release upload "$TAG" "$DMG_PATH" --clobber
 
 echo "Successfully created draft release $TAG and uploaded $DMG_NAME."
-echo "Please review the draft release on GitHub: https://github.com/$(git remote get-url origin | sed -e 's/.*://' -e 's/\.git$//')/releases/edit/$TAG"
+# Use gh repo view to reliably get owner/repo
+REPO_FULL_NAME=$(gh repo view --json owner,name --jq '.owner.login + "/" + .name')
+echo "Please review the draft release on GitHub: https://github.com/$REPO_FULL_NAME/releases/edit/$TAG"
 
