@@ -1,0 +1,241 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'package.json'
+      - 'src-tauri/tauri.conf.json'
+  workflow_dispatch:
+    inputs:
+      force_release:
+        description: 'Force a release even if version has not changed'
+        type: boolean
+        default: false
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.check.outputs.should_release }}
+      version: ${{ steps.check.outputs.version }}
+      previous_version: ${{ steps.check.outputs.previous_version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check version changes
+        id: check
+        run: |
+          git diff HEAD^ HEAD --name-only
+          
+          # Get current version from package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          
+          # Get previous commit's package.json version
+          git checkout HEAD~1 package.json
+          PREVIOUS_VERSION=$(node -p "require('./package.json').version")
+          git checkout HEAD package.json
+          
+          echo "Current version: $CURRENT_VERSION"
+          echo "Previous version: $PREVIOUS_VERSION"
+          
+          # Determine if we should create a release
+          if [ "$CURRENT_VERSION" != "$PREVIOUS_VERSION" ] || ${{ github.event.inputs.force_release == 'true' }}; then
+            echo "Version changed from $PREVIOUS_VERSION to $CURRENT_VERSION or force_release is true"
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+            echo "previous_version=$PREVIOUS_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "No version change detected"
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          fi
+
+  build:
+    needs: check-version
+    if: needs.check-version.outputs.should_release == 'true'
+    uses: ./.github/workflows/build.yml
+    with:
+      version: ${{ needs.check-version.outputs.version }}
+      should_build: true
+
+  create-release:
+    needs: [check-version, build]
+    if: needs.check-version.outputs.should_release == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: true
+          
+      - name: Setup Node.js with PNPM cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Examine artifact structure
+        run: |
+          echo "Listing base artifacts directory:"
+          ls -la artifacts || echo "No artifacts directory found."
+          
+          echo "Listing installers directory:"
+          ls -la installers || echo "No installers directory found."
+          
+          echo "Searching for DMG files in any location:"
+          find . -name "*.dmg" || echo "No DMG files found."
+          
+          # Create the release assets directory
+          mkdir -p release-assets
+
+      - name: Find macOS Apple Silicon artifact
+        id: find_aarch64
+        run: |
+          # First try to find in artifacts directory from build job
+          AARCH64_DMG=$(find artifacts -name "*aarch64.dmg" 2>/dev/null | head -n 1)
+          
+          # If not found, try installers directory
+          if [ -z "$AARCH64_DMG" ]; then
+            echo "Apple Silicon DMG not found in artifacts, checking installers directory..."
+            AARCH64_DMG=$(find installers -name "*aarch64.dmg" 2>/dev/null | head -n 1)
+          fi
+          
+          # If still not found, look anywhere in the repository
+          if [ -z "$AARCH64_DMG" ]; then
+            echo "Apple Silicon DMG not found in installers, checking entire repository..."
+            AARCH64_DMG=$(find . -name "*aarch64.dmg" 2>/dev/null | head -n 1)
+          fi
+          
+          if [ -z "$AARCH64_DMG" ]; then
+            echo "ERROR: Could not find Apple Silicon DMG file"
+            exit 1
+          fi
+          
+          echo "Found Apple Silicon DMG: $AARCH64_DMG"
+          echo "path=$AARCH64_DMG" >> $GITHUB_OUTPUT
+          echo "filename=$(basename $AARCH64_DMG)" >> $GITHUB_OUTPUT
+          cp "$AARCH64_DMG" release-assets/
+
+      - name: Find macOS Intel artifact
+        id: find_x64
+        run: |
+          # First try to find in artifacts directory from build job
+          X64_DMG=$(find artifacts -name "*x64.dmg" 2>/dev/null | head -n 1)
+          
+          # If not found, try installers directory
+          if [ -z "$X64_DMG" ]; then
+            echo "Intel DMG not found in artifacts, checking installers directory..."
+            X64_DMG=$(find installers -name "*x64.dmg" 2>/dev/null | head -n 1)
+          fi
+          
+          # If still not found, look anywhere in the repository
+          if [ -z "$X64_DMG" ]; then
+            echo "Intel DMG not found in installers, checking entire repository..."
+            X64_DMG=$(find . -name "*x64.dmg" 2>/dev/null | head -n 1)
+          fi
+          
+          # Set a flag to indicate if we found the file (don't exit with error)
+          if [ -z "$X64_DMG" ]; then
+            echo "WARNING: Could not find Intel DMG file. Continuing without it."
+            echo "found=false" >> $GITHUB_OUTPUT
+          else
+            echo "Found Intel DMG: $X64_DMG"
+            echo "path=$X64_DMG" >> $GITHUB_OUTPUT
+            echo "filename=$(basename $X64_DMG)" >> $GITHUB_OUTPUT
+            echo "found=true" >> $GITHUB_OUTPUT
+            cp "$X64_DMG" release-assets/
+          fi
+
+      - name: Generate update JSON
+        run: |
+          # List the actual files to verify the names
+          echo "Files in release-assets directory:"
+          ls -la release-assets/
+          
+          # Generate latest.json 
+          node ./scripts/generate-update-json.js
+          cp latest.json release-assets/
+
+      - name: Create Draft Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.check-version.outputs.version }}
+          release_name: Circle Camera v${{ needs.check-version.outputs.version }}
+          draft: true
+          prerelease: false
+          body: |
+            # Circle Camera ${{ needs.check-version.outputs.version }}
+            
+            Automated release from version ${{ needs.check-version.outputs.previous_version }} to ${{ needs.check-version.outputs.version }}
+            
+            ## Platform Support
+            
+            Circle Camera is officially supported on macOS only (both Intel and Apple Silicon).
+            Windows is not officially supported at this time.
+            
+            ## How to Test This Release
+            
+            1. Download the appropriate installer for your platform
+            2. Install the application
+            3. Verify that the app works as expected
+            4. Test the automatic update system
+            
+            ## Changelog
+            
+            *Please add your changelog here before publishing the release*
+
+      - name: Upload macOS Apple Silicon Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.find_aarch64.outputs.path }}
+          asset_name: ${{ steps.find_aarch64.outputs.filename }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS Intel Asset
+        if: steps.find_x64.outputs.found == 'true'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.find_x64.outputs.path }}
+          asset_name: ${{ steps.find_x64.outputs.filename }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload latest.json Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release-assets/latest.json
+          asset_name: latest.json
+          asset_content_type: application/json

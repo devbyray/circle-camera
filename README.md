@@ -8,6 +8,16 @@
   A sleek, minimalist webcam app that displays your camera feed in a perfect circle.
 </p>
 
+![Circle Camera Screenshot](./docs/public/images/screenshot-app.png)
+
+<div align="center">
+<img src="./docs/public/images/screenshot-border-color.png" alt="Circle Camera Screenshot" width="400" height="400">
+<img src="./docs/public/images/screenshot-camera-settings.png" alt="Circle Camera Screenshot" width="400" height="400">
+</div>
+
+---
+
+
 <p align="center">
   <a href="#features">Features</a> •
   <a href="#installation">Installation</a> •
@@ -19,19 +29,23 @@
 
 ## Features
 
-✨ **Circular Display** - Show your webcam feed in a perfect circle, ideal for screen recordings and presentations
+✨ **Customizable Shape** - Display your webcam feed in a perfect circle or square, based on your preference
 
-🔍 **Resizable** - Easily adjust the size to fit your needs
+🔍 **Resizable** - Easily adjust the size using buttons or keyboard shortcuts
 
 🖱️ **Draggable** - Position the camera anywhere on your screen
 
-🎥 **Camera Selection** - Choose between multiple cameras if available
+🎥 **Camera Selection** - Switch between multiple cameras if available
+
+🎨 **Border Customization** - Adjust border thickness and color to match your style
 
 🔄 **Always on Top** - Stay visible over other applications
 
 🎮 **Minimal UI** - Controls only appear when you hover over the camera
 
 🖼️ **Transparent Background** - Seamlessly blend with any desktop
+
+🔢 **Version Display** - Always know which version you're using
 
 ## Installation
 Currently we only support MacOS, Windows will come soon.
@@ -47,10 +61,13 @@ Currently we only support MacOS, Windows will come soon.
 
 ### Basic Controls
 
-- **Drag**: Click and drag anywhere on the circle to move the camera
-- **Resize**: Hover over the camera and use the + and - buttons to resize
+- **Drag**: Click and drag anywhere on the camera display to move it
+- **Resize**: Hover over the camera and use the + and - buttons to resize, or use keyboard shortcuts (Arrow Up/Down)
+- **Shape Toggle**: Switch between circle and square camera views from the settings menu
+- **Border Customization**: Adjust border thickness and select any color using the color picker
+- **Camera Selection**: Switch between cameras using the camera dropdown menu
 - **Close**: Hover over the camera and click the X button to close the app
-- **Camera Selection**: Hover over the camera and use the dropdown to select a different camera
+- **Version**: The current version is displayed at the bottom of the settings menu
 
 ### Tips
 
