@@ -136,7 +136,10 @@ jobs:
           echo "Found Apple Silicon DMG: $AARCH64_DMG"
           echo "path=$AARCH64_DMG" >> $GITHUB_OUTPUT
           echo "filename=$(basename $AARCH64_DMG)" >> $GITHUB_OUTPUT
-          cp "$AARCH64_DMG" release-assets/
+          
+          # Copy to release assets with explicit name
+          cp "$AARCH64_DMG" "release-assets/$(basename $AARCH64_DMG)"
+          echo "Copied to release-assets/$(basename $AARCH64_DMG)"
 
       - name: Find macOS Intel artifact
         id: find_x64
@@ -165,7 +168,10 @@ jobs:
             echo "path=$X64_DMG" >> $GITHUB_OUTPUT
             echo "filename=$(basename $X64_DMG)" >> $GITHUB_OUTPUT
             echo "found=true" >> $GITHUB_OUTPUT
-            cp "$X64_DMG" release-assets/
+            
+            # Copy to release assets with explicit name
+            cp "$X64_DMG" "release-assets/$(basename $X64_DMG)"
+            echo "Copied to release-assets/$(basename $X64_DMG)"
           fi
 
       - name: Generate update JSON
@@ -209,25 +215,38 @@ jobs:
             
             *Please add your changelog here before publishing the release*
 
-      - name: Upload macOS Apple Silicon Asset
+      - name: Debug release assets
+        run: |
+          echo "Contents of release-assets directory:"
+          ls -la release-assets/
+          
+          echo "Apple Silicon DMG path: ${{ steps.find_aarch64.outputs.path }}"
+          echo "Apple Silicon DMG filename: ${{ steps.find_aarch64.outputs.filename }}"
+          
+          if [ "${{ steps.find_x64.outputs.found }}" == "true" ]; then
+            echo "Intel DMG path: ${{ steps.find_x64.outputs.path }}"
+            echo "Intel DMG filename: ${{ steps.find_x64.outputs.filename }}"
+          fi
+
+      - name: Upload macOS Apple Silicon DMG
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.find_aarch64.outputs.path }}
-          asset_name: ${{ steps.find_aarch64.outputs.filename }}
+          asset_path: "release-assets/${{ steps.find_aarch64.outputs.filename }}"
+          asset_name: "${{ steps.find_aarch64.outputs.filename }}"
           asset_content_type: application/octet-stream
 
-      - name: Upload macOS Intel Asset
+      - name: Upload macOS Intel DMG
         if: steps.find_x64.outputs.found == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.find_x64.outputs.path }}
-          asset_name: ${{ steps.find_x64.outputs.filename }}
+          asset_path: "release-assets/${{ steps.find_x64.outputs.filename }}"
+          asset_name: "${{ steps.find_x64.outputs.filename }}"
           asset_content_type: application/octet-stream
 
       - name: Upload latest.json Asset
