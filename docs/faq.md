@@ -32,6 +32,25 @@ No, Circle Camera only displays your webcam feed. It doesn't record video. To re
 
 Circle Camera is designed to be lightweight and efficient. It uses minimal CPU and memory resources.
 
+### Why does macOS say "Circle Camera cannot be opened because the developer cannot be verified"?
+
+![macOS Gatekeeper Warning](/images/gatekeeper-warning.png)
+
+This is a standard macOS security feature called Gatekeeper. It appears when you try to open an application downloaded from the internet that hasn't been notarized by Apple (a process to verify the developer's identity).
+
+Since Circle Camera is distributed directly and not through the Mac App Store, you might see this warning the first time you open it.
+
+**To allow the app to run:**
+
+1.  After trying to open the app and seeing the warning, go to **System Settings** > **Privacy & Security**.
+2.  Scroll down to the **Security** section.
+3.  You'll find a message saying *"Circle Camera" was blocked...*
+    ![macOS Privacy & Security Settings](/images/gatekeeper-allow.png)
+4.  Click the **"Open Anyway"** button.
+5.  You may need to confirm or enter your password.
+
+After doing this once, you should be able to open Circle Camera normally.
+
 ## Usage Questions
 
 ### How do I move the camera?

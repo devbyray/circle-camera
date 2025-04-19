@@ -84,6 +84,25 @@ If the video feed is laggy or delayed:
 2. **Reduce Camera Resolution**
    - High-resolution cameras might cause performance issues
 
+## Installation Issues
+
+### macOS: "Circle Camera" cannot be opened because the developer cannot be verified.
+
+When you first try to open Circle Camera on macOS, you might see a warning message like this:
+
+![macOS Gatekeeper Warning](/images/gatekeeper-warning.png)
+
+This happens because the application is not yet notarized by Apple. This is expected behavior for applications downloaded directly from developers outside the App Store.
+
+**To allow the app to run:**
+
+1.  Go to **System Settings** > **Privacy & Security**.
+2.  Scroll down to the **Security** section.
+3.  You should see a message: *"Circle Camera" was blocked from use because it is not from an identified developer.*
+4.  Click the **"Open Anyway"** button next to the message. You might need to enter your administrator password.
+    ![macOS Privacy & Security Settings](/images/gatekeeper-allow.png)
+5.  You should now be able to open Circle Camera from your Applications folder or Launchpad.
+
 ## Still Need Help?
 
 If you're still experiencing issues after trying these troubleshooting steps, please contact our [support](mailto:camera@byrayray.dev) with the following information:

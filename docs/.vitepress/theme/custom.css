@@ -1,70 +1,85 @@
 /* Custom styles for Circle Camera website */
-
+.is-home .vp-doc {
+	max-width: 800px;
+}
 /* Download page styles */
 .download-container {
-  display: flex;
-  justify-content: center;
-  margin: 2rem 0;
+	display: flex;
+	justify-content: center;
+	margin: 2rem 0;
 }
 
 .download-card {
-  background-color: var(--vp-c-bg-soft);
-  border-radius: 8px;
-  padding: 2rem;
-  text-align: center;
-  max-width: 400px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	background-color: var(--vp-c-bg-soft);
+	border-radius: 8px;
+	padding: 2rem;
+	text-align: center;
+	max-width: 400px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .download-image {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 1rem;
+	width: 100px;
+	height: 100px;
+	margin-bottom: 1rem;
 }
 
 .download-button {
-  display: inline-block;
-  background-color: var(--vp-c-brand);
-  color: white !important;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  text-decoration: none;
-  margin-top: 1rem;
-  font-weight: 500;
+	display: inline-block;
+	background-color: var(--vp-c-brand);
+	color: white !important;
+	padding: 0.5rem 1rem;
+	border-radius: 4px;
+	text-decoration: none;
+	margin-top: 1rem;
+	font-weight: 500;
+	transition: ease-in-out 0.3s;
 }
 
-.download-button:hover {
-  background-color: var(--vp-c-brand-dark);
-  text-decoration: none !important;
+a.download-button:hover {
+	background-color: hsl(from var(--vp-c-brand) h s calc(l * 0.8));
+	text-decoration: none !important;
 }
 
 /* General styles */
 .center-content {
-  text-align: center;
-  margin: 2rem 0;
+	text-align: center;
+	margin: 2rem 0;
 }
 
 .feature-image {
-  max-width: 100%;
-  border-radius: 8px;
-  margin: 1rem 0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	max-width: 100%;
+	border-radius: 8px;
+	margin: 1rem 0;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive styles */
 @media (max-width: 768px) {
-  .download-container {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .download-card {
-    max-width: 100%;
-  }
+	.download-container {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.download-card {
+		max-width: 100%;
+	}
 }
 
 .recomendations {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+}
+
+.subscribe-form {
+	display: flex;
+	justify-content: center;
+	margin: 2rem 1rem;
+}
+
+.screenshot-row {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
