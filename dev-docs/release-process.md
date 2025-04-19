@@ -1,25 +1,37 @@
 # Circle Camera Release Process
 
-This document details the process for creating and publishing new releases of the Circle Camera app.
+This document details the process for creating and publishing new releases of the Circle Camera app using the local release script.
 
 ## Overview
 
-Circle Camera uses an automated GitHub Actions workflow to build, package, and release the application. The workflow is designed to:
+Circle Camera uses a shell script (`scripts/release.sh`) to facilitate the release process locally. This script handles:
 
-1. Detect version changes
-2. Build installers for supported platforms (macOS only)
-3. Generate update information
-4. Create a draft GitHub release
+1.  Validating the code.
+2.  Building the universal macOS DMG installer.
+3.  Creating a draft GitHub release with the installer attached.
 
-## Automated Release Process
+## Local Release Process
+
+### Prerequisites
+
+Before running the release script, ensure you have the following installed and configured:
+
+*   **Git**: For branch checking and getting the remote URL.
+*   **pnpm**: For running validation and build scripts.
+*   **jq**: For parsing the version number from `package.json`.
+*   **GitHub CLI (`gh`)**: For creating the draft release and uploading assets. You need to be authenticated (`gh auth login`).
+*   **Rust toolchain**: With the `x86_64-apple-darwin` and `aarch64-apple-darwin` targets installed (`rustup target add x86_64-apple-darwin`).
 
 ### Triggering a New Release
 
-A new release is automatically triggered whenever a change to the version number is detected in:
-- `package.json`
-- `src-tauri/tauri.conf.json`
+To create a new release:
 
-When a PR that includes version changes is merged to the `main` branch, the GitHub Actions workflow will automatically start.
+1.  **Ensure you are on the `main` branch.** The script checks this by default.
+2.  **Update version numbers**: Increment the version in:
+    *   `package.json`
+    *   `src-tauri/tauri.conf.json`
+3.  **Commit and push** these changes.
+4.  **Run the release script**: `pnpm run release` (or directly `./scripts/release.sh`).
 
 ### Version Numbering
 
@@ -30,108 +42,74 @@ Circle Camera follows [Semantic Versioning](https://semver.org/) (SemVer):
   - **Y** is the minor version (new features, non-breaking)
   - **Z** is the patch version (bug fixes)
 
-Example: `0.2.0` → `0.3.0` for a minor version with new features
+Example: `0.3.0` → `0.3.1` for a patch release.
 
-### Version Update Checklist
+### The Release Script (`scripts/release.sh`)
 
-When preparing a release:
+The script performs the following steps:
 
-1. **Update both version files**:
-   - `package.json`: Update the `"version"` field
-   - `src-tauri/tauri.conf.json`: Update the version in the `"package"` section
+1.  **Branch Check**: Verifies you are on the `main` branch (can be overridden for testing: `./scripts/release.sh <branch-name>`).
+2.  **Get Version**: Extracts the version from `package.json` to create the tag (e.g., `v0.3.1`).
+3.  **Validate**: Runs `pnpm validate` (checks TypeScript and Rust code).
+4.  **Build**: Runs `pnpm tauri build --target universal-apple-darwin` to create the universal DMG.
+5.  **Create Draft Release**: Uses `gh release create` to make a draft release on GitHub with the extracted tag.
+6.  **Upload Asset**: Uses `gh release upload` to attach the built DMG to the draft release.
 
-2. **Create a PR** with these changes and any other code changes for the release
+## Manual Steps After Script Completion
 
-3. **Merge to main** after review and approval
+Once the script finishes successfully:
 
-## GitHub Actions Workflow
-
-The workflow (defined in `.github/workflows/release.yml`) performs these steps:
-
-1. **Check Version**: Compares current and previous versions
-2. **Build macOS Installers**: 
-   - Builds for Apple Silicon (M1/M2) architecture
-   - Builds for Intel architecture
-3. **Generate Update JSON**: Creates the `latest.json` file for auto-updates
-4. **Create Release**:
-   - Makes a draft GitHub release
-   - Uploads installers and `latest.json`
-   - Prepares release notes template
-
-## Manual Steps After Automation
-
-Once the GitHub Actions workflow completes, you need to:
-
-1. **Go to GitHub Releases** in the repository
-2. **Find the draft release** created by the workflow
-3. **Edit the release notes**:
-   - Replace the template with actual changelog details
-   - List new features, improvements, and bug fixes
-4. **Review the attached assets**:
-   - Verify that all installers are present
-   - Check that `latest.json` is included and correct
-5. **Publish the release** when ready
+1.  **Go to GitHub Releases** in the repository.
+2.  **Find the draft release** created by the script (e.g., `v0.3.1`).
+3.  **Edit the release notes**:
+    *   Add a detailed changelog.
+    *   List new features, improvements, and bug fixes.
+4.  **Review the attached assets**:
+    *   Verify the universal DMG is present.
+5.  **Publish the release** when ready.
 
 ## Testing Before Publishing
 
 Before publishing the release:
 
-1. Download the macOS installers from the draft release
-2. Install and test the application on:
-   - macOS with Apple Silicon (M1/M2)
-   - macOS with Intel processor
-3. Verify that all new features work correctly
-4. Test the auto-update mechanism (if relevant)
-
-## Update System Verification
-
-To verify the update system:
-
-1. Ensure the previous version of the app is installed
-2. Publish the release
-3. Open the previous version and ensure it detects the update
-4. Test the update installation process
+1.  Download the macOS DMG from the draft release.
+2.  Install and test the application on:
+    *   macOS with Apple Silicon (M1/M2/M3)
+    *   macOS with Intel processor
+3.  Verify that all new features/fixes work correctly.
+4.  Test the auto-update mechanism by generating the `latest.json` (this is currently a separate manual step if needed, see `scripts/generate-update-json.js`).
 
 ## Platform Support
 
 Currently, Circle Camera officially supports:
-- macOS (Apple Silicon)
-- macOS (Intel)
+- macOS (Universal - Apple Silicon & Intel)
 
-Windows is not officially supported at this time. If Windows support is added in the future, the GitHub workflow comments can be uncommented to enable Windows builds.
+Windows is not officially supported or built by the release script.
 
 ## Handling Hotfixes
 
 For emergency fixes:
 
-1. Create a branch from the latest release tag
-2. Fix the issue and update version to `X.Y.Z+1`
-3. Create PR and merge to main
-4. The workflow will create a new draft release automatically
+1.  Create a branch from the latest release tag.
+2.  Fix the issue and update the version number (e.g., `X.Y.Z+1`) in `package.json` and `tauri.conf.json`.
+3.  Commit, push, and merge to `main`.
+4.  Run the release script from the `main` branch: `pnpm run release`.
 
 ## Troubleshooting Release Issues
 
-If the GitHub Actions workflow fails:
+If the release script fails:
 
-1. Check the workflow logs for errors
-2. Common issues include:
-   - Rust build errors
-   - Missing dependencies
-   - Permission issues with GitHub tokens
-   - Incorrect artifact paths
+1.  Check the script's output for specific error messages.
+2.  Common issues include:
+    *   Missing prerequisites (`jq`, `gh`).
+    *   `gh` CLI not authenticated.
+    *   Rust build errors (check `pnpm validate` output).
+    *   Incorrect Git branch.
+    *   Network issues during GitHub API calls.
 
 ## Release Announcements
 
 After publishing a release:
 
-1. Update the website with the new version details
-2. Post announcements on relevant channels
-3. Update documentation if user-facing changes were made
-
-## Reverting Releases
-
-In case a critical issue is found in a release:
-
-1. Create a new release with the fix
-2. Do not delete the problematic release (to maintain version continuity)
-3. Mark the problematic release as "pre-release" and add a warning in its notes
+1.  Update the website/documentation with the new version details.
+2.  Post announcements on relevant channels.
