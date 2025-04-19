@@ -33,5 +33,5 @@ Controls only appear when you hover over the camera, keeping the interface clean
 The transparent background allows Circle Camera to seamlessly blend with any desktop or application, creating a clean, professional look.
 
 <div class="vp-doc" style="text-align: center; margin-top: 2rem;">
-  <a href="/download" class="vp-button medium brand">Download Now</a>
+  <a href="/download" class="download-button">Download Now</a>
 </div>

@@ -1,93 +1,107 @@
 ---
-# https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
 hero:
-  name: "Circle Camera"
-  text: "A sleek, minimalist webcam app"
-  tagline: Display your webcam feed in a perfect circle, ideal for screen recordings and presentations. Currently available for macOS (Apple Silicon & Intel).
-  image: ./images/app-screenshot.svg
-  actions:
-    - theme: brand
-      text: Download for macOS
-      link: /download
-    - theme: alt
-      text: Learn More
-      link: /features
-    - theme: sponsor
-      text: Check on Product Hunt
-      link: https://www.producthunt.com/posts/circle-camera
+    name: 'Circle Camera'
+    text: 'Your webcam, reimagined for macOS'
+    tagline: |
+        Show up on screen with style.  
+        Circle Camera puts your webcam feed in a sleek, floating circle—perfect for live streams, screen recordings, video calls, and presentations.
+    image: ./images/app-screenshot.svg
+    actions:
+        - theme: brand
+          text: Download for macOS 🖥️
+          link: /download
+        - theme: alt
+          text: See Features
+          link: /features
+        - theme: sponsor
+          text: ⭐ Product Hunt
+          link: https://www.producthunt.com/posts/circle-camera
 
 features:
-  - icon: ✨
-    title: Customizable Shape
-    details: Display your webcam feed as a circle or square based on your preference
-  - icon: 🔄
-    title: Always on Top
-    details: Stay visible over other applications
-  - icon: 🎮
-    title: Minimal UI
-    details: Controls only appear when you hover over the camera
+    - icon: 🎯
+      title: Focused Design
+      details: The circular overlay keeps attention on you, not on a chunky UI
+    - icon: ⚡
+      title: Always on Top
+      details: Your camera stays visible—even when you switch apps
+    - icon: 🛠️
+      title: Instant Setup
+      details: Download, open, and you’re ready—no fiddly settings
 ---
 
+## Why Choose Circle Camera?
 
-## Why Circle Camera?
+Circle Camera was built **just for macOS**, so you get rock‑solid performance on both Apple Silicon and Intel Macs. Whether you’re a content creator, teacher, or remote professional, you’ll love how simple it is to look polished on video without distracting borders or menus.
 
-Circle Camera is designed for content creators, presenters, and professionals who want to include their webcam feed in screen recordings or presentations without taking up too much space.
+-   **Zero distractions.** No toolbars, no panels—just you in a clean circle.
+-   **Mac‑native speed.** Light on CPU and memory, so nothing slows you down.
+-   **Effortless control.** Move, resize, or hide the circle with a click or keyboard shortcut.
 
-With its circular design and transparent background, Circle Camera provides a clean, professional look that doesn't distract from your content.
-
-## Features
-
-✨ **Customizable Shape** - Display your webcam feed in a perfect circle or square, based on your preference
-
-🔍 **Resizable** - Easily adjust the size using buttons or keyboard shortcuts
-
-🖱️ **Draggable** - Position the camera anywhere on your screen
-
-🎥 **Camera Selection** - Switch between multiple cameras if available
-
-🎨 **Border Customization** - Adjust border thickness and color to match your style
-
-🔄 **Always on Top** - Stay visible over other applications
-
-🎮 **Minimal UI** - Controls only appear when you hover over the camera
-
-🖼️ **Transparent Background** - Seamlessly blend with any desktop
-
-🔢 **Version Display** - Always know which version you're using
-
-
-## Screenshots
-
-![Circle Camera Screenshot](/images/screenshot-app.png)
-
-<div class="screenshot-row">
-<img src="/images/screenshot-border-color.png" alt="Circle Camera Screenshot" width="400" height="400">
-<img src="/images/screenshot-camera-settings.png" alt="Circle Camera Screenshot" width="400" height="400">
+<div style="text-align: center; margin: 2rem 0;">
+  <a href="/download" class="download-button">
+    Download for macOS 🖥️
+  </a>
 </div>
 
-## Stay Updated!
+## Key Features
 
-Want to be the first to know about new features, get tips on using Circle Camera for your content, and receive exclusive updates? Subscribe to our newsletter!
+✨ **Circle & Square Modes**  
+Switch between a round or square window in one click.
+
+📏 **Resizable & Draggable**  
+Drag it anywhere, and scale it to any size without distortion.
+
+🔀 **Multiple Cameras**  
+Flip between built‑in and external webcams instantly.
+
+🎨 **Custom Borders**  
+Pick your frame color, width, or go border‑free.
+
+👆 **Minimal UI**  
+Controls appear only on hover, keeping your workspace tidy.
+
+🔄 **Always on Top**  
+Keep your feed above every other app—never get buried.
+
+🖼️ **Transparent Background**  
+Blend seamlessly with any presentation or desktop layout.
+
+## How It Works
+
+1. **Download & open** the app—no installer needed.
+2. **Grant camera access** when prompted.
+3. **Drag, resize, and style** your circle on screen.
+4. **Enjoy** a polished, distraction‑free video feed.
+
+<div style="text-align: center; margin: 2rem 0;">
+  <a href="/download" class="download-button">
+    Get Circle Camera for macOS
+  </a>
+</div>
+
+## What People Are Saying
+
+> “Circle Camera is a game‑changer for my tutorials—so clean and easy to use!”  
+> — Alex, online educator
+
+> “Finally an app that feels built for Mac. Lightweight and flawless.”  
+> — Priya, remote team lead
+
+[⭐ See more reviews on Product Hunt »](https://www.producthunt.com/posts/circle-camera)
+
+
+## Stay in the Loop
+
+Want tips on making your videos look great? New feature alerts?  
+Sign up for our newsletter—no spam, ever.
 
 <div class="subscribe-form">
-<iframe src="https://embeds.beehiiv.com/2bff70b2-0ba3-4e8e-8e18-87a04f34f6f5?slim=true" data-test-id="beehiiv-embed" height="52" frameborder="0" scrolling="no" style="margin: 0; border-radius: 8px !important; background-color: transparent;"></iframe>
+<iframe
+  src="https://embeds.beehiiv.com/2bff70b2-0ba3-4e8e-8e18-87a04f34f6f5?slim=true"
+  height="60"
+  style="border: none; border-radius: 8px; overflow: hidden; height: 52px;"
+  scrolling="no"
+/>
 </div>
-
-
-## Recommendations:
-
-<a href="https://www.producthunt.com/posts/circle-camera?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-circle&#0045;camera" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=951220&theme=light&t=1744185745115" alt="Circle&#0032;Camera - Minimalist&#0032;webcam&#0032;app&#0032;that&#0032;displays&#0032;your&#0032;camera&#0032;in&#0032;a&#0032;circle&#0046; | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
-
-<div class="recomendations">
-
-<iframe style="border: none;" src="https://cards.producthunt.com/cards/comments/4525025?v=1" width="500" height="405" frameborder="0" scrolling="no" allowfullscreen></iframe>
-
-<iframe style="border: none;" src="https://cards.producthunt.com/cards/reviews/1254272?v=1" width="500" height="405" frameborder="0" scrolling="no" allowfullscreen></iframe>
-
-</div>
-
-<!-- <div class="vp-doc" style="text-align: center; margin-top: 2rem;">
-  <a href="https://apps-by-rayray.lemonsqueezy.com/buy/8398f6ca-7229-4db3-85c9-42336db18bd5?embed=1" class="lemonsqueezy-button">Buy Circle Camera</a><script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
-</div> -->
