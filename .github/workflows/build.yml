@@ -48,7 +48,8 @@ jobs:
   build-macos:
     needs: validate
     runs-on: macos-latest
-    if: inputs.validate_only == 'false'
+    # Fix the condition to properly handle boolean inputs
+    if: inputs.validate_only != true && inputs.should_build != false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

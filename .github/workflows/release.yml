@@ -61,6 +61,7 @@ jobs:
     with:
       version: ${{ needs.check-version.outputs.version }}
       should_build: true
+      validate_only: false
 
   create-release:
     needs: [check-version, build]
