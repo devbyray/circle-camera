@@ -60,19 +60,15 @@
       "providerShortName": null,
       "signingIdentity": null,
       "minimumSystemVersion": "10.15",
-      "license": "../LICENSE.md",
-      "useBootstrapper": true,
       "dmg": {
         "background": null,
-        "window": {
-          "position": {
-            "x": 400,
-            "y": 250
-          },
-          "size": {
-            "width": 600,
-            "height": 400
-          }
+        "windowPosition": {
+          "x": 400,
+          "y": 250
+        },
+        "windowSize": {
+          "width": 600,
+          "height": 400
         }
       }
     }
