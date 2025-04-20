@@ -28,3 +28,5 @@ dist-ssr
 *.sw?
 docs/.vitepress/cache
 .env
+scripts/generate-update-json.js
+.tauri/

@@ -40,6 +40,7 @@
     "macOSPrivateApi": true
   },
   "bundle": {
+    "createUpdaterArtifacts": true,
     "active": true,
     "targets": "all",
     "icon": [
@@ -69,7 +70,7 @@
         "https://github.com/devbyray/circle-camera/releases/latest/download/latest.json"
       ],
       "dialog": true,
-      "pubkey": ""
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDE1RDAzOUYxQkIzQzgzQkEKUldTNmd6eTc4VG5RRmVhOWFyclhiSnpZVmYvOFhiL2RoSmltelBucDEwWnI2aE5SUVJBbzF3dlAK"
     }
   }
 }
