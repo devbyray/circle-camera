@@ -29,6 +29,27 @@ TAG="v$VERSION"
 echo "Running validation..."
 pnpm validate
 
+# --- Check for signing keys ---
+PRIVATE_KEY_PATH="$HOME/.tauri/circle-camera.key"
+PUBLIC_KEY_PATH="$HOME/.tauri/circle-camera.key.pub"
+
+if [ ! -f "$PRIVATE_KEY_PATH" ] || [ ! -f "$PUBLIC_KEY_PATH" ]; then
+  echo "Error: Signing keys not found. They should be at:"
+  echo "  - $PRIVATE_KEY_PATH"
+  echo "  - $PUBLIC_KEY_PATH"
+  echo ""
+  echo "Generate them with: npx @tauri-apps/cli signer generate -w $HOME/.tauri/circle-camera.key"
+  exit 1
+fi
+echo "✅ Signing keys found"
+
+# --- Verify environment variables ---
+if [ -z "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+  echo "Warning: TAURI_SIGNING_PRIVATE_KEY environment variable not set."
+  echo "Setting it now to $PRIVATE_KEY_PATH for this session."
+  export TAURI_SIGNING_PRIVATE_KEY="$PRIVATE_KEY_PATH"
+fi
+
 # --- Build ---
 echo "Building universal macOS DMG..."
 # Using --target universal-apple-darwin explicitly for clarity
@@ -46,6 +67,16 @@ if [ ! -f "$DMG_PATH" ]; then
     exit 1
 fi
 echo "DMG file found: $DMG_PATH"
+
+# --- Generate update.json file with signatures ---
+echo "Generating latest.json update file with signatures..."
+pnpm generate:update-json
+
+if [ ! -f "latest.json" ]; then
+    echo "Error: latest.json file was not generated"
+    exit 1
+fi
+echo "✅ latest.json generated successfully"
 
 # --- Create GitHub Draft Release ---
 echo "Creating draft release $TAG on GitHub..."
@@ -66,7 +97,10 @@ fi
 echo "Uploading asset: $DMG_PATH"
 gh release upload "$TAG" "$DMG_PATH" --clobber
 
-echo "Successfully created draft release $TAG and uploaded $DMG_NAME."
+echo "Uploading update information: latest.json"
+gh release upload "$TAG" "latest.json" --clobber
+
+echo "Successfully created draft release $TAG and uploaded $DMG_NAME and latest.json."
 # Use gh repo view to reliably get owner/repo
 REPO_FULL_NAME=$(gh repo view --json owner,name --jq '.owner.login + "/" + .name')
 echo "Please review the draft release on GitHub: https://github.com/$REPO_FULL_NAME/releases/edit/$TAG"
