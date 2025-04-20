@@ -1,15 +1,11 @@
 {
-  "version": "0.2.0",
-  "notes": "Circle Camera 0.2.0 release",
-  "pub_date": "2025-04-17T14:09:31.335Z",
+  "version": "0.3.1",
+  "notes": "Circle Camera 0.3.1 release",
+  "pub_date": "2025-04-20T08:30:36.719Z",
   "platforms": {
-    "darwin-x86_64": {
-      "signature": "",
-      "url": "https://github.com/devbyray/circle-camera/releases/download/0.2.0/Circle.Camera_0.2.0_x64.dmg"
-    },
     "darwin-aarch64": {
-      "signature": "",
-      "url": "https://github.com/devbyray/circle-camera/releases/download/0.2.0/Circle.Camera_0.2.0_aarch64.dmg"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTNmd6eTc4VG5RRlJlZTZzeEpJZC9pRGp4TzNGQTE5amdqN2dTWUVRYTdMVzJoYUFIZU5udmlIUStSYnNMS1Z6Y3JhdW5xaEc1cnBESzd4c2lnS0l5SllUd2R0MDM4emdnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzQ1MTM2NjY1CWZpbGU6Q2lyY2xlIENhbWVyYS5hcHAudGFyLmd6CmFiK1NQU3JUeHBPTzU2bTRmbXVqZUJrbTBLYUpKaWxCblIxTUpyMWh4RisvUndWdlRpMGxxU2pjdzhmZUUwdWdKUFFOc1hSam1iVTNpUk05cWltakNRPT0K",
+      "url": "https://github.com/devbyray/circle-camera/releases/download/v0.3.1/Circle.Camera_0.3.1_aarch64.dmg"
     }
   }
 }

@@ -18,7 +18,8 @@
 		"docs:dev": "vitepress dev docs",
 		"docs:build": "vitepress build docs",
 		"docs:preview": "vitepress preview docs",
-		"release": "./scripts/release.sh"
+		"release": "./scripts/release.sh",
+		"tauri:build": "dotenv -- tauri build"
 	},
 	"dependencies": {
 		"@iconify-icons/icomoon-free": "^1.2.3",
@@ -36,6 +37,8 @@
 	"devDependencies": {
 		"@tauri-apps/cli": "^2",
 		"@vitejs/plugin-vue": "^5.2.1",
+		"dotenv": "^16.5.0",
+		"dotenv-cli": "^8.0.0",
 		"release-it": "^18.1.2",
 		"typescript": "~5.8.3",
 		"vite": "^6.0.3",
