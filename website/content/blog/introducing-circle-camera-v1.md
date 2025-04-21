@@ -3,7 +3,7 @@ title: "Introducing Circle Camera v1.0: The Perfect Frame for Your Video Calls"
 description: "We're excited to announce the official release of Circle Camera v1.0, bringing a suite of new features and improvements to help you look your best on video calls."
 date: "2025-04-18"
 author: "The Circle Camera Team"
-image: "/images/blog/circle-camera-v1.jpg"
+image: "/images/hero-screenshot.png"
 tags: ["product", "release", "features"]
 ---
 

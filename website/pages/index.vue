@@ -255,10 +255,10 @@
 					<!-- Blog post previews will be rendered here -->
 					<div
 						v-for="article in blogPosts"
-						:key="article._path"
+						:key="article.path"
 						class="bg-gray-100/80 dark:bg-gray-900/50 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800"
 					>
-						<NuxtLink :to="article._path">
+						<NuxtLink :to="article.path">
 							<img
 								v-if="article.image"
 								:src="article.image"
@@ -287,6 +287,9 @@
 <script setup>
 // Fetch blog posts with queryCollection API (Nuxt Content v3)
 const { data: blogPosts } = await useAsyncData('blogPosts', () => {
-	return queryCollection('content').where('path', 'LIKE', '/blog/%').limit(3).find()
+	return queryCollection('blog')
+    .select('title', 'description', 'path', 'id', 'date')
+    .order('date', 'DESC')
+    .all()
 })
 </script>
