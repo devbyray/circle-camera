@@ -13,7 +13,7 @@
           <div class="grid md:grid-cols-2 gap-10">
             <!-- macOS Download -->
             <div class="bg-gray-900/50 p-10 rounded-xl border border-gray-800 text-center">
-              <img src="/images/apple-logo.svg" alt="macOS" class="w-20 h-20 mx-auto mb-6" />
+              <img src="/images/apple-logo.svg" alt="macOS" class="w-20 h-20 mx-auto mb-6 text-gray-300" />
               <h2 class="text-2xl mb-4">macOS</h2>
               <p class="text-gray-400 mb-6">Compatible with macOS 10.15 Catalina and newer</p>
               <a href="#" class="px-8 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-medium text-lg transition-colors inline-block">
@@ -22,15 +22,20 @@
               <p class="text-sm text-gray-500 mt-4">Version 1.0.0 - Released April 18, 2025</p>
             </div>
             
-            <!-- Windows Download -->
-            <div class="bg-gray-900/50 p-10 rounded-xl border border-gray-800 text-center">
-              <img src="/images/windows-logo.svg" alt="Windows" class="w-20 h-20 mx-auto mb-6" />
-              <h2 class="text-2xl mb-4">Windows</h2>
-              <p class="text-gray-400 mb-6">Compatible with Windows 10 and newer</p>
-              <a href="#" class="px-8 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-medium text-lg transition-colors inline-block">
-                Download for Windows
-              </a>
-              <p class="text-sm text-gray-500 mt-4">Version 1.0.0 - Released April 18, 2025</p>
+            <!-- Windows Download (Disabled) -->
+            <div class="bg-gray-900/30 p-10 rounded-xl border border-gray-800/50 text-center relative opacity-70">
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="px-4 py-2 bg-gray-800/80 text-white rounded-full font-medium">Coming Soon</span>
+              </div>
+              <div class="filter grayscale blur-[0.5px]">
+                <img src="/images/windows-logo.svg" alt="Windows" class="w-20 h-20 mx-auto mb-6 text-gray-400" />
+                <h2 class="text-2xl mb-4 text-gray-500">Windows</h2>
+                <p class="text-gray-500 mb-6">Compatible with Windows 10 and newer</p>
+                <button disabled class="px-8 py-3 rounded-full bg-gray-700 text-gray-400 font-medium text-lg inline-block cursor-not-allowed">
+                  Download for Windows
+                </button>
+                <p class="text-sm text-gray-600 mt-4">Version 1.0.0 - Coming Soon</p>
+              </div>
             </div>
           </div>
           
@@ -52,9 +57,9 @@
               </div>
               
               <!-- Windows Instructions -->
-              <div class="bg-gray-900/30 p-8 rounded-xl">
-                <h3 class="mb-4">Installing on Windows</h3>
-                <ol class="list-decimal list-inside space-y-4 text-gray-300">
+              <div class="bg-gray-900/30 p-8 rounded-xl opacity-70">
+                <h3 class="mb-4 text-gray-500">Installing on Windows</h3>
+                <ol class="list-decimal list-inside space-y-4 text-gray-500">
                   <li>Download the installer using the button above</li>
                   <li>Open the downloaded file</li>
                   <li>If SmartScreen appears, click "More info" and then "Run anyway"</li>
@@ -109,3 +114,10 @@
     </section>
   </div>
 </template>
+
+<style scoped>
+/* Make SVG icons lighter in dark mode */
+img[src$=".svg"] {
+  filter: brightness(1.5);
+}
+</style>

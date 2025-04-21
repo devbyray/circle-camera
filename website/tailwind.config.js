@@ -9,6 +9,7 @@ export default {
     "./error.vue",
     "./content/**/*.md",
   ],
+  darkMode: 'class', // Enable class-based dark mode switching
   theme: {
     extend: {},
   },
