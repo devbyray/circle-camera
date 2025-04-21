@@ -102,49 +102,43 @@ import AccordionItem from '~/components/AccordionItem.vue'
 					<!-- FAQ Section -->
 					<div class="mt-20">
 						<h2 class="text-center mb-12">Frequently Asked Questions</h2>
+						
+						<Accordion :singleOpen="true">
+							<AccordionItem title="Is Circle Camera free?">
+								<p class="text-gray-700 dark:text-gray-300">
+									Yes! Circle Camera is completely free to download and use. We may introduce premium features in the future, but the core functionality will always remain free.
+								</p>
+							</AccordionItem>
+							
+							<AccordionItem title="Can I use Circle Camera with any video conferencing app?">
+								<p class="text-gray-700 dark:text-gray-300">
+									Absolutely! Circle Camera works with Zoom, Microsoft Teams, Google Meet, Webex, and any other application that can access your webcam.
+								</p>
+							</AccordionItem>
+							
+							<AccordionItem title="What are the system requirements?">
+								<p class="text-gray-700 dark:text-gray-300">
+									Circle Camera is designed to be lightweight. It runs on macOS 10.15+ and Windows 10+. We recommend at least 4GB of RAM and any webcam compatible with your operating system.
+								</p>
+							</AccordionItem>
 
-						<div class="space-y-6">
-							<div class="border border-gray-800 rounded-lg overflow-hidden">
-								<div class="p-6 bg-gray-900/50">
-									<h3 class="text-xl">Is Circle Camera free?</h3>
-								</div>
-								<div class="p-6 bg-gray-900/30">
-									<p>
-										Yes! Circle Camera is completely free to download and use. We may introduce
-										premium features in the future, but the core functionality will always remain
-										free.
-									</p>
-								</div>
-							</div>
-
-							<div class="border border-gray-800 rounded-lg overflow-hidden">
-								<div class="p-6 bg-gray-900/50">
-									<h3 class="text-xl">Can I use Circle Camera with any video conferencing app?</h3>
-								</div>
-								<div class="p-6 bg-gray-900/30">
-									<p>
-										Absolutely! Circle Camera works with Zoom, Microsoft Teams, Google Meet, Webex,
-										and any other application that can access your webcam.
-									</p>
-								</div>
-							</div>
-
-							<div class="border border-gray-800 rounded-lg overflow-hidden">
-								<div class="p-6 bg-gray-900/50">
-									<h3 class="text-xl">What are the system requirements?</h3>
-								</div>
-								<div class="p-6 bg-gray-900/30">
-									<p>
-										Circle Camera is designed to be lightweight. It runs on macOS 10.15+ and Windows
-										10+. We recommend at least 4GB of RAM and any webcam compatible with your
-										operating system.
-									</p>
-								</div>
-							</div>
-						</div>
-
+							<AccordionItem title="How do I change the border color?">
+								<p class="text-gray-700 dark:text-gray-300">
+									Click on the settings icon in the app, then select the "Colors" tab. From there, you can choose from preset colors or enter a custom HEX value.
+								</p>
+							</AccordionItem>
+							
+							<AccordionItem title="Does Circle Camera record video?">
+								<p class="text-gray-700 dark:text-gray-300">
+									No, Circle Camera is designed to be a live webcam feed only. It doesn't have recording capabilities to keep the app lightweight and focused on its core purpose.
+								</p>
+							</AccordionItem>
+						</Accordion>
+						
 						<div class="text-center mt-12">
-							<NuxtLink to="/faq" class="text-blue-500 hover:text-blue-400"> View all FAQs → </NuxtLink>
+							<NuxtLink to="/faq" class="text-blue-600 dark:text-blue-500 hover:text-blue-500 dark:hover:text-blue-400">
+								View all FAQs →
+							</NuxtLink>
 						</div>
 					</div>
 				</div>
