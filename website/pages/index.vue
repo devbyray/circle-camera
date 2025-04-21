@@ -4,7 +4,7 @@
 		<section class="py-20 md:py-32">
 			<div class="container mx-auto px-4">
 				<div class="max-w-4xl mx-auto text-center flex flex-col items-center">
-					<img src="/images/app-logo.svg" class="w-24 mb-8" />
+					<img src="/images/app-logo.svg" class="w-24 mb-8" alt="Circle Camera logo" height="96" width="96" />
 					<h1 class="mb-8">
 						A sleek, minimalist webcam app
 						<span

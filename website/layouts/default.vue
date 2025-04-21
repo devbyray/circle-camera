@@ -1,11 +1,12 @@
 <template>
   <div class="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-gray-800 dark:text-white">
     <!-- Header -->
-    <header class="py-6 border-b border-gray-200 dark:border-gray-800">
+    <header class="py-6 border-b border-gray-200 dark:border-gray-800 sticky top-0 bg-white dark:bg-zinc-950 z-50">
       <div class="container mx-auto px-4">
         <div class="flex justify-between items-center">
           <div class="flex items-center space-x-2">
-            <NuxtLink to="/" class="text-2xl font-bold text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400">
+            <NuxtLink to="/" class="text-2xl font-bold text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 inline-flex gap-4">
+              <img src="/images/app-logo.svg" class="w-8" width="32" height="32" alt="Circle Camera logo" />
               Circle Camera
             </NuxtLink>
           </div>
@@ -26,7 +27,7 @@
             </NuxtLink>
             
             <!-- Mobile menu button -->
-            <button class="md:hidden text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+            <button class="md:hidden cursor-pointer text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
               </svg>
