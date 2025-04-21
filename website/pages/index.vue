@@ -172,26 +172,32 @@
 
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <!-- Blog post previews will be rendered here -->
-          <ContentList path="/blog" :limit="3">
-            <template #default="{ list }">
-              <div v-for="article in list" :key="article._path" class="bg-gray-900/50 rounded-xl overflow-hidden border border-gray-800">
-                <NuxtLink :to="article._path">
-                  <img v-if="article.image" :src="article.image" :alt="article.title" class="w-full h-48 object-cover" />
-                  <div class="p-6">
-                    <div class="text-sm text-gray-400 mb-2">{{ new Date(article.date).toLocaleDateString() }}</div>
-                    <h3 class="text-xl mb-3">{{ article.title }}</h3>
-                    <p class="text-gray-400 mb-4">{{ article.description }}</p>
-                    <div class="text-blue-500">Read more →</div>
-                  </div>
-                </NuxtLink>
+          <div v-for="article in blogPosts" :key="article._path" class="bg-gray-900/50 rounded-xl overflow-hidden border border-gray-800">
+            <NuxtLink :to="article._path">
+              <img v-if="article.image" :src="article.image" :alt="article.title" class="w-full h-48 object-cover" />
+              <div class="p-6">
+                <div class="text-sm text-gray-400 mb-2">{{ new Date(article.date).toLocaleDateString() }}</div>
+                <h3 class="text-xl mb-3">{{ article.title }}</h3>
+                <p class="text-gray-400 mb-4">{{ article.description }}</p>
+                <div class="text-blue-500">Read more →</div>
               </div>
-            </template>
-            <template #empty>
-              <p>Check back soon for new blog posts!</p>
-            </template>
-          </ContentList>
+            </NuxtLink>
+          </div>
+          <div v-if="!blogPosts || blogPosts.length === 0" class="col-span-3 text-center py-10">
+            <p>Check back soon for new blog posts!</p>
+          </div>
         </div>
       </div>
     </section>
   </div>
 </template>
+
+<script setup>
+// Fetch blog posts with queryCollection API (Nuxt Content v3)
+const { data: blogPosts } = await useAsyncData('blogPosts', () => {
+  return queryCollection('content')
+    .where('path', 'LIKE', '/blog/%')
+    .limit(3)
+    .find()
+})
+</script>
