@@ -21,7 +21,7 @@
             <!-- Theme Toggle Button -->
             <ThemeToggle />
             
-            <NuxtLink to="/download" class="px-6 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors">
+            <NuxtLink to="/download" class="px-6 py-2 rounded-full bg-primary-dark hover:bg-primary text-white font-medium transition-colors">
               Download
             </NuxtLink>
             

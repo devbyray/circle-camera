@@ -3,7 +3,8 @@
     <!-- Hero Section -->
     <section class="py-20 md:py-32">
       <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto text-center">
+        <div class="max-w-4xl mx-auto text-center flex flex-col items-center">
+          <img src="/images/app-logo.svg" class="w-24 mb-8" />
           <h1 class="mb-8">
             A sleek, minimalist webcam app
             <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500">
@@ -14,7 +15,7 @@
             Enhance your video calls with a clean, distraction-free camera feed that perfectly frames your face.
           </p>
           <div class="flex flex-wrap justify-center gap-4">
-            <NuxtLink to="/download" class="px-8 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-medium text-lg transition-colors">
+            <NuxtLink to="/download" class="px-8 py-3 rounded-full bg-primary-dark hover:bg-primary text-white font-medium text-lg transition-colors">
               Download Now
             </NuxtLink>
             <NuxtLink to="/features" class="px-8 py-3 rounded-full border border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-800 dark:text-white font-medium text-lg transition-colors">
@@ -39,7 +40,7 @@
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <!-- Feature 1 -->
           <div class="bg-gray-100/80 dark:bg-gray-900/50 p-8 rounded-xl border border-gray-200 dark:border-gray-800">
-            <div class="w-12 h-12 bg-blue-500/10 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
+            <div class="w-12 h-12 bg-primary/10 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
               <span class="text-2xl">🎯</span>
             </div>
             <h3 class="text-xl mb-4">Perfect Circle Format</h3>
@@ -48,7 +49,7 @@
           
           <!-- Feature 2 -->
           <div class="bg-gray-100/80 dark:bg-gray-900/50 p-8 rounded-xl border border-gray-200 dark:border-gray-800">
-            <div class="w-12 h-12 bg-blue-500/10 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
+            <div class="w-12 h-12 bg-primary/10 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
               <span class="text-2xl">🎨</span>
             </div>
             <h3 class="text-xl mb-4">Customizable Colors</h3>
@@ -57,7 +58,7 @@
           
           <!-- Feature 3 -->
           <div class="bg-gray-100/80 dark:bg-gray-900/50 p-8 rounded-xl border border-gray-200 dark:border-gray-800">
-            <div class="w-12 h-12 bg-blue-500/10 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
+            <div class="w-12 h-12 bg-primary/10 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
               <span class="text-2xl">⚡</span>
             </div>
             <h3 class="text-xl mb-4">Lightweight & Fast</h3>
@@ -66,7 +67,7 @@
           
           <!-- Feature 4 -->
           <div class="bg-gray-100/80 dark:bg-gray-900/50 p-8 rounded-xl border border-gray-200 dark:border-gray-800">
-            <div class="w-12 h-12 bg-blue-500/10 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
+            <div class="w-12 h-12 bg-primary/10 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
               <span class="text-2xl">🖥️</span>
             </div>
             <h3 class="text-xl mb-4">Works with Any App</h3>
@@ -75,7 +76,7 @@
           
           <!-- Feature 5 -->
           <div class="bg-gray-100/80 dark:bg-gray-900/50 p-8 rounded-xl border border-gray-200 dark:border-gray-800">
-            <div class="w-12 h-12 bg-blue-500/10 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
+            <div class="w-12 h-12 bg-primary/10 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
               <span class="text-2xl">🔒</span>
             </div>
             <h3 class="text-xl mb-4">Privacy Focused</h3>
@@ -84,7 +85,7 @@
           
           <!-- Feature 6 -->
           <div class="bg-gray-100/80 dark:bg-gray-900/50 p-8 rounded-xl border border-gray-200 dark:border-gray-800">
-            <div class="w-12 h-12 bg-blue-500/10 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
+            <div class="w-12 h-12 bg-primary/10 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
               <span class="text-2xl">🔄</span>
             </div>
             <h3 class="text-xl mb-4">Always Updated</h3>
@@ -153,7 +154,7 @@
           <p class="text-xl text-gray-700 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
             Join thousands of professionals who've enhanced their online presence with Circle Camera.
           </p>
-          <NuxtLink to="/download" class="px-8 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-medium text-lg transition-colors">
+          <NuxtLink to="/download" class="px-8 py-3 rounded-full bg-primary-dark hover:bg-primary text-white font-medium text-lg transition-colors">
             Download for Free
           </NuxtLink>
         </div>

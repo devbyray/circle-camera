@@ -1,7 +1,7 @@
 <template>
   <button
     @click="toggleTheme"
-    class="p-2 rounded-full hover:bg-gray-800/50 dark:hover:bg-gray-800/50 hover:bg-gray-200/50 transition-colors"
+    class="p-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-800/50 hover:bg-gray-200/50 transition-colors cursor-pointer"
     :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
     aria-label="Toggle dark/light mode"
   >
@@ -25,7 +25,7 @@
     <svg
       v-else
       xmlns="http://www.w3.org/2000/svg"
-      class="h-6 w-6 text-gray-600"
+      class="h-6 w-6 text-gray-600 hover:text-white"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
