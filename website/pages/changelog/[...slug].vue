@@ -14,9 +14,11 @@
           
           <p v-if="post.description" class="text-xl mb-8 italic">{{ post.description }}</p>
           
-          <div v-if="post.image" class="mb-10">
-            <img :src="post.image" :alt="post.title" class="w-full rounded-xl shadow-lg border border-gray-800" />
-          </div>
+          <nav>
+            <NuxtLink :to="post.releaseUrl" target="_blank" class="px-6 py-4 rounded-full bg-primary-dark hover:bg-primary text-white font-medium transition-colors">
+              <span>Download this version</span>
+            </NuxtLink>
+          </nav>
         </div>
       
         
@@ -36,8 +38,8 @@
           </div>
           
           <div class="flex justify-between">
-            <NuxtLink to="/blog" class="text-blue-500 hover:text-blue-400 flex items-center gap-2">
-              <span>← Back to blog</span>
+            <NuxtLink to="/changelog" class="text-blue-500 hover:text-blue-400 flex items-center gap-2">
+              <span>← Back to changelog</span>
             </NuxtLink>
           </div>
         </div>
@@ -53,11 +55,11 @@ const route = useRoute()
 // Get the slug from the route params
 const slug = route.params.slug
 
-// Properly construct the path for the blog post
-const postPath = Array.isArray(slug) ? `/blog/${slug.join('/')}` : `/blog/${slug}`
+// Properly construct the path for the changelog post
+const postPath = Array.isArray(slug) ? `/changelog/${slug.join('/')}` : `/changelog/${slug}`
 
-// Fetch the blog post using Nuxt Content v3 API with queryCollection
-const { data: post } = await useAsyncData(`blog-post-${postPath}`, () => {
-  return queryCollection('blog').path(`/blog/${slug}`).first()
+// Fetch the changelog post using Nuxt Content v3 API with queryCollection
+const { data: post } = await useAsyncData(`changelog-post-${postPath}`, () => {
+  return queryCollection('changelog').path(`/changelog/${slug}`).first()
 })
 </script>

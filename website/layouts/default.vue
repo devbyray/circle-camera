@@ -12,10 +12,9 @@
           </div>
           
           <nav class="hidden md:flex items-center space-x-8">
-            <NuxtLink to="/features" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Features</NuxtLink>
-            <NuxtLink to="/pricing" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Pricing</NuxtLink>
-            <NuxtLink to="/blog" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Blog</NuxtLink>
             <NuxtLink to="https://docs.circlecamera.com" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Docs</NuxtLink>
+            <NuxtLink to="/changelog" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Changelog</NuxtLink>
+            <NuxtLink to="/blog" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Blog</NuxtLink>
           </nav>
           
           <div class="flex items-center space-x-4">
@@ -80,6 +79,13 @@
             @click="closeMobileMenu"
           >
             Docs
+          </NuxtLink>
+          <NuxtLink 
+            to="/changelog" 
+            class="text-xl text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors py-2"
+            @click="closeMobileMenu"
+          >
+            Changelog
           </NuxtLink>
           <div class="border-t border-gray-200 dark:border-gray-800 pt-6">
             <NuxtLink 

@@ -3,8 +3,8 @@
     <section class="py-20">
       <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center mb-16">
-          <h1 class="mb-6">Circle Camera Blog</h1>
-          <p class="text-xl text-gray-400">
+          <h1 class="mb-6 text-5xl">Circle Camera Blog</h1>
+          <p class="text-xl text-gray-400 italic">
             Updates, tutorials, and insights about Circle Camera and video conferencing.
           </p>
         </div>
@@ -28,7 +28,7 @@
                     {{ article.title }}
                   </NuxtLink>
                 </h2>
-                <p class="text-gray-400 mb-4">{{ article.description }}</p>
+                <p class=" mb-4">{{ article.description }}</p>
                 <div class="flex items-center mt-4">
                   <div class="flex flex-wrap gap-2">
                     <span v-for="tag in article.tags" :key="tag" class="px-3 py-1 text-xs rounded-full bg-gray-800 text-gray-300">
