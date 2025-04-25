@@ -3,6 +3,9 @@
 declare global {
   interface Window {
     __TAURI__?: any;
+    __TAURI_METADATA__?: {
+      closeSettings?: () => void;
+    };
   }
   interface Navigator {
     webkitGetUserMedia?: (constraints: MediaStreamConstraints,

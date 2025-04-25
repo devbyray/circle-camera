@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import { getAvailableCameras } from '../utils/cameraUtils';
-import { startDrag } from '../utils/windowUtils';
+import { startDrag, closeApp } from '../utils/windowUtils';
 import WebcamCircle from './WebcamCircle.vue';
 import WindowControls from './WindowControls.vue';
 import MenuBar from './MenuBar.vue';
@@ -54,14 +54,63 @@ function handleResize(change: number) {
 
 // Toggle settings menu
 function toggleSettings() {
+  // Force a true state change to ensure reactivity
   showSettings.value = !showSettings.value;
   console.log('Settings toggled:', showSettings.value);
+
+  // If we're showing settings, make sure color picker is hidden
+  if (showSettings.value) {
+    showColorPicker.value = false;
+  }
+
+  // Debug output to console
+  console.log('Current settings state:', {
+    showSettings: showSettings.value,
+    showColorPicker: showColorPicker.value
+  });
+}
+
+// Close settings menu
+function closeSettings() {
+  console.log('Closing settings from WebcamContainer');
+  showSettings.value = false;
+
+  // Force a UI update
+  setTimeout(() => {
+    if (showSettings.value === false) {
+      console.log('Settings confirmed closed');
+    } else {
+      console.log('Failed to close settings, forcing close');
+      showSettings.value = false;
+    }
+  }, 50);
 }
 
 // Toggle color picker
 function toggleColorPicker() {
   showColorPicker.value = !showColorPicker.value;
   console.log('Color picker toggled:', showColorPicker.value);
+}
+
+// Update functions for settings
+function updateBorderRadius(val: number) {
+  console.log('Border radius updated:', val);
+  borderRadius.value = val;
+}
+
+function updateBorderWidth(val: number) {
+  console.log('Border width updated:', val);
+  borderWidth.value = val;
+}
+
+function updateBorderColor(val: string) {
+  console.log('Border color updated:', val);
+  borderColor.value = val;
+}
+
+function updateSelectedCamera(val: string) {
+  console.log('Camera updated:', val);
+  selectedCameraId.value = val;
 }
 
 
@@ -88,6 +137,12 @@ async function setupEventListeners() {
       console.log('Received border color event:', event);
       borderColor.value = event.payload as string;
     });
+
+    // Listen for close settings event
+    listen('close-settings', () => {
+      console.log('Received close-settings event');
+      showSettings.value = false;
+    });
   } catch (error) {
     console.error('Error setting up event listeners:', error);
   }
@@ -101,7 +156,35 @@ function handleKeyboardShortcuts(event: KeyboardEvent) {
                          activeElement instanceof HTMLTextAreaElement ||
                          activeElement instanceof HTMLSelectElement;
 
-  // Only process shortcuts if no input is focused
+  // Process Escape key regardless of focus state
+  if (event.key === 'Escape') {
+    if (showSettings.value) {
+      showSettings.value = false;
+      console.log('Settings closed with Escape key');
+      event.preventDefault();
+      return;
+    } else if (showColorPicker.value) {
+      showColorPicker.value = false;
+      console.log('Color picker closed with Escape key');
+      event.preventDefault();
+      return;
+    } else if (!isInputFocused) {
+      closeApp();
+      return;
+    }
+  }
+
+  // Close settings with 'C' key
+  if (event.key === 'c' || event.key === 'C') {
+    if (showSettings.value) {
+      showSettings.value = false;
+      console.log('Settings closed with C key');
+      event.preventDefault();
+      return;
+    }
+  }
+
+  // Only process other shortcuts if no input is focused
   if (!isInputFocused) {
     // Zoom in with '+' or '=' keys
     if (event.key === '+' || event.key === '=') {
@@ -110,6 +193,11 @@ function handleKeyboardShortcuts(event: KeyboardEvent) {
     // Zoom out with '-' key
     else if (event.key === '-') {
       handleResize(-20);
+    }
+    // Toggle settings with 's' key
+    else if (event.key === 's' || event.key === 'S') {
+      toggleSettings();
+      event.preventDefault();
     }
   }
 }
@@ -121,6 +209,15 @@ onMounted(async () => {
 
   // Add keyboard event listener
   window.addEventListener('keydown', handleKeyboardShortcuts);
+
+  // Add closeSettings to window object for direct access
+  if (!window.__TAURI_METADATA__) {
+    window.__TAURI_METADATA__ = {};
+  }
+  window.__TAURI_METADATA__.closeSettings = () => {
+    showSettings.value = false;
+    console.log('Settings closed via global function');
+  };
 });
 
 // No need to call stopCamera here as it's handled in the WebcamCircle component
@@ -131,7 +228,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <main class="container" id="container">
+  <main class="container" id="container" @click="showSettings ? closeSettings() : null">
+    <!-- Direct close button that will always work -->
+    <button v-if="showSettings" class="direct-close-button" @click.stop="showSettings = false">Close Settings</button>
+    <!-- We don't need emergency close buttons anymore -->
     <div
       class="webcam-container"
       :style="{
@@ -139,6 +239,7 @@ onUnmounted(() => {
         height: `${cameraSize}px`
       }"
       @mousedown="startDrag"
+      @click.stop
     >
       <!-- Main webcam component -->
       <WebcamCircle
@@ -170,11 +271,11 @@ onUnmounted(() => {
         :availableCameras="availableCameras"
         :selectedCameraId="selectedCameraId"
         :isVisible="showSettings"
-        @update:borderRadius="(val: number) => { borderRadius = val; console.log('Border radius updated:', val); }"
-        @update:borderWidth="(val: number) => { borderWidth = val; console.log('Border width updated:', val); }"
-        @update:borderColor="(val: string) => { borderColor = val; console.log('Border color updated:', val); }"
-        @update:selectedCameraId="(val: string) => { selectedCameraId = val; console.log('Camera updated:', val); }"
-        @close="showSettings = false"
+        @update:borderRadius="updateBorderRadius"
+        @update:borderWidth="updateBorderWidth"
+        @update:borderColor="updateBorderColor"
+        @update:selectedCameraId="updateSelectedCamera"
+        @close="closeSettings"
       />
 
       <!-- Color Picker Overlay -->
@@ -228,5 +329,25 @@ onUnmounted(() => {
   background-color: rgba(0, 0, 0, 0.7);
   padding: 5px 10px;
   border-radius: 4px;
+}
+
+/* Direct close button */
+.direct-close-button {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-color: #ff3b30;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 3000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.direct-close-button:hover {
+  background-color: #ff1a0e;
 }
 </style>

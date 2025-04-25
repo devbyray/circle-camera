@@ -30,23 +30,23 @@ function handleCloseApp() {
 <template>
   <div class="window-controls">
     <div class="left-controls">
-      <button class="control-button settings" @click="toggleSettings" title="Settings">
+      <button class="control-button settings" @click.stop="toggleSettings" title="Settings">
         <IconLibrary name="settings" size="16" color="#fff" />
       </button>
-      <button class="control-button color-picker" @click="toggleColorPicker" title="Color Picker">
+      <button class="control-button color-picker" @click.stop="toggleColorPicker" title="Color Picker">
         <IconLibrary name="color-palette" size="16" color="#fff" />
       </button>
     </div>
 
     <div class="right-controls">
-      <button class="control-button resize" v-if="cameraSize > 100" @click="resizeCamera(-20)" title="Decrease size (- key)">
+      <button class="control-button resize" v-if="cameraSize > 100" @click.stop="resizeCamera(-20)" title="Decrease size (- key)">
         <IconLibrary name="remove" size="24" />
       </button>
-      <button class="control-button resize" v-if="cameraSize < 350" @click="resizeCamera(20)" title="Increase size (+ key)">
+      <button class="control-button resize" v-if="cameraSize < 350" @click.stop="resizeCamera(20)" title="Increase size (+ key)">
         <IconLibrary name="add" size="24" />
       </button>
 
-      <button class="control-button close" @click="handleCloseApp" title="Close">
+      <button class="control-button close" @click.stop="handleCloseApp" title="Close">
         <IconLibrary name="close" size="24" />
       </button>
     </div>
@@ -108,11 +108,5 @@ function handleCloseApp() {
   background-color: #ff3e00;
 }
 
-/* .control-button.settings {
-  font-size: 12px;
-}
 
-.control-button.settings:hover {
-  background-color: rgba(0, 0, 0, 1);
-} */
 </style>

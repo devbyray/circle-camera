@@ -16,18 +16,21 @@ fn close_app(window: tauri::Window) -> Result<(), String> {
 // Commands for camera settings
 #[tauri::command]
 fn set_border_radius(app_handle: tauri::AppHandle, radius: u32) -> Result<(), String> {
+    println!("Setting border radius to {}", radius);
     let window = app_handle.get_webview_window("main").ok_or("Window not found")?;
     window.emit("set-border-radius", radius).map_err(|e| e.to_string())
 }
 
 #[tauri::command]
 fn set_border_width(app_handle: tauri::AppHandle, width: u32) -> Result<(), String> {
+    println!("Setting border width to {}", width);
     let window = app_handle.get_webview_window("main").ok_or("Window not found")?;
     window.emit("set-border-width", width).map_err(|e| e.to_string())
 }
 
 #[tauri::command]
 fn set_border_color(app_handle: tauri::AppHandle, color: String) -> Result<(), String> {
+    println!("Setting border color to {}", color);
     let window = app_handle.get_webview_window("main").ok_or("Window not found")?;
     window.emit("set-border-color", color).map_err(|e| e.to_string())
 }
@@ -35,32 +38,38 @@ fn set_border_color(app_handle: tauri::AppHandle, color: String) -> Result<(), S
 // Commands for direct shape changes
 #[tauri::command]
 fn set_square_shape(app_handle: tauri::AppHandle) -> Result<(), String> {
+    println!("Setting square shape");
     set_border_radius(app_handle, 0)
 }
 
 #[tauri::command]
 fn set_circle_shape(app_handle: tauri::AppHandle) -> Result<(), String> {
+    println!("Setting circle shape");
     set_border_radius(app_handle, 50)
 }
 
 // Commands for direct border width changes
 #[tauri::command]
 fn set_no_border(app_handle: tauri::AppHandle) -> Result<(), String> {
+    println!("Setting no border");
     set_border_width(app_handle, 0)
 }
 
 #[tauri::command]
 fn set_thin_border(app_handle: tauri::AppHandle) -> Result<(), String> {
+    println!("Setting thin border");
     set_border_width(app_handle, 2)
 }
 
 #[tauri::command]
 fn set_medium_border(app_handle: tauri::AppHandle) -> Result<(), String> {
+    println!("Setting medium border");
     set_border_width(app_handle, 5)
 }
 
 #[tauri::command]
 fn set_thick_border(app_handle: tauri::AppHandle) -> Result<(), String> {
+    println!("Setting thick border");
     set_border_width(app_handle, 10)
 }
 
